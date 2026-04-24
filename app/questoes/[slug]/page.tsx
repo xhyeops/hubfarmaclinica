@@ -6,25 +6,26 @@ import { ArrowLeft, Edit3, Save, X } from "lucide-react"
 import Link from "next/link"
 import { useState, use } from "react"
 
-// Edite este objeto para adicionar seus casos clínicos
+// Edite este objeto para adicionar suas questões
 const conteudos: Record<string, { title: string; content: string }> = {
   "exemplo-1": {
-    title: "Título do Caso Clínico",
-    content: `Descrição do caso clínico.
+    title: "Título do Quiz",
+    content: `Questão 1: Enunciado da questão
 
-Você pode adicionar:
-- História do paciente
-- Exame físico
-- Exames complementares
-- Hipóteses diagnósticas
-- Conduta
-- Discussão farmacológica`,
+a) Alternativa A
+b) Alternativa B
+c) Alternativa C
+d) Alternativa D
+
+Resposta: Letra X
+
+Comentário: Explicação da resposta correta.`,
   },
 }
 
-export default function CasoDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
-  const data = conteudos[slug] || { title: "Caso não encontrado", content: "" }
+  const data = conteudos[slug] || { title: "Questão não encontrada", content: "" }
   
   const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(data.title)
@@ -41,7 +42,7 @@ export default function CasoDetailPage({ params }: { params: Promise<{ slug: str
       <main className="lg:pl-56 pt-14 lg:pt-0">
         <div className="max-w-3xl mx-auto px-4 py-8 lg:py-12">
           <Link 
-            href="/casos-clinicos" 
+            href="/questoes" 
             className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"
           >
             <ArrowLeft className="h-4 w-4 mr-1.5" />
@@ -86,7 +87,7 @@ export default function CasoDetailPage({ params }: { params: Promise<{ slug: str
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 className="w-full min-h-[400px] bg-muted/50 rounded-lg p-4 text-sm leading-relaxed resize-none outline-none focus:ring-2 focus:ring-primary/20"
-                placeholder="Digite o caso clínico aqui..."
+                placeholder="Digite suas questões aqui..."
               />
             ) : (
               <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">

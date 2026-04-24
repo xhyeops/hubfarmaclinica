@@ -1,53 +1,38 @@
 "use client"
 
+import Link from "next/link"
 import { Sidebar } from "@/components/sidebar"
-import { StatsCard } from "@/components/stats-card"
-import { ContentCard } from "@/components/content-card"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import {
-  FileText,
-  Stethoscope,
-  HelpCircle,
-  BookOpen,
-  TrendingUp,
-  Clock,
-  Pill,
-  FlaskConical,
-} from "lucide-react"
+import { FileText, FlaskConical, HelpCircle, Pill, ArrowRight } from "lucide-react"
 
-const recentContent = [
+const sections = [
   {
-    title: "Farmacocinética: Absorção e Distribuição",
-    category: "Resumo",
-    href: "/resumos/farmacocinetica-absorcao",
-    color: "primary" as const,
+    title: "Resumos",
+    description: "Conteúdos resumidos",
+    href: "/resumos",
+    icon: FileText,
+    color: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
   },
   {
-    title: "Caso: Intoxicação por Paracetamol",
-    category: "Caso Clínico",
-    href: "/casos-clinicos/intoxicacao-paracetamol",
-    color: "accent" as const,
+    title: "Casos Clínicos",
+    description: "Casos práticos",
+    href: "/casos-clinicos",
+    icon: FlaskConical,
+    color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
   },
   {
-    title: "Anti-hipertensivos: Mecanismos de Ação",
-    category: "Resumo",
-    href: "/resumos/anti-hipertensivos",
-    color: "primary" as const,
+    title: "Questões",
+    description: "Banco de questões",
+    href: "/questoes",
+    icon: HelpCircle,
+    color: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
   },
   {
-    title: "Interações com Varfarina",
-    category: "Interações",
-    href: "/interacoes/varfarina",
-    color: "secondary" as const,
+    title: "Fármacos",
+    description: "Consulta rápida",
+    href: "/farmacos",
+    icon: Pill,
+    color: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
   },
-]
-
-const upcomingTopics = [
-  "Antibióticos Beta-lactâmicos",
-  "Farmacologia do SNC",
-  "Analgésicos Opioides",
-  "Antidiabéticos Orais",
 ]
 
 export default function HomePage() {
@@ -55,128 +40,48 @@ export default function HomePage() {
     <div className="min-h-screen bg-background">
       <Sidebar />
       
-      <main className="lg:pl-72">
-        <div className="px-4 py-6 lg:px-8 lg:py-8">
+      <main className="lg:pl-56 pt-14 lg:pt-0">
+        <div className="max-w-3xl mx-auto px-4 py-8 lg:py-12">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-foreground lg:text-3xl">
-              Bem-vindo à Monitoria de Farmacologia Clínica
+          <div className="mb-10">
+            <h1 className="text-2xl lg:text-3xl font-semibold tracking-tight text-foreground mb-2">
+              Monitoria de Farmacologia Clínica
             </h1>
-            <p className="mt-2 text-muted-foreground">
-              Seu hub de estudos completo para dominar farmacologia clínica
+            <p className="text-muted-foreground">
+              Seu hub de estudos.
             </p>
           </div>
 
-          {/* Stats */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-            <StatsCard
-              title="Resumos"
-              value="24"
-              icon={<FileText className="h-6 w-6" />}
-              trend="+3 esta semana"
-            />
-            <StatsCard
-              title="Casos Clínicos"
-              value="12"
-              icon={<Stethoscope className="h-6 w-6" />}
-              trend="+2 esta semana"
-            />
-            <StatsCard
-              title="Questões"
-              value="150"
-              icon={<HelpCircle className="h-6 w-6" />}
-              trend="+15 esta semana"
-            />
-            <StatsCard
-              title="Materiais"
-              value="8"
-              icon={<BookOpen className="h-6 w-6" />}
-            />
+          {/* Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {sections.map((section) => (
+              <Link
+                key={section.href}
+                href={section.href}
+                className="group flex items-center gap-4 p-4 bg-card rounded-xl border border-border hover:border-primary/40 transition-all"
+              >
+                <div className={`w-10 h-10 rounded-lg ${section.color} flex items-center justify-center shrink-0`}>
+                  <section.icon className="h-5 w-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="font-medium text-foreground group-hover:text-primary transition-colors">
+                    {section.title}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {section.description}
+                  </p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </Link>
+            ))}
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-3">
-            {/* Recent Content */}
-            <div className="lg:col-span-2">
-              <Card className="border-0 shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="text-lg font-semibold">
-                    Conteúdo Recente
-                  </CardTitle>
-                  <TrendingUp className="h-5 w-5 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {recentContent.map((item) => (
-                      <ContentCard
-                        key={item.href}
-                        title={item.title}
-                        category={item.category}
-                        href={item.href}
-                        color={item.color}
-                        icon={
-                          item.category === "Resumo" ? (
-                            <FileText className="h-12 w-12" />
-                          ) : item.category === "Caso Clínico" ? (
-                            <Stethoscope className="h-12 w-12" />
-                          ) : (
-                            <Pill className="h-12 w-12" />
-                          )
-                        }
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Sidebar Content */}
-            <div className="space-y-6">
-              {/* Upcoming Topics */}
-              <Card className="border-0 shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="text-lg font-semibold">
-                    Próximos Temas
-                  </CardTitle>
-                  <Clock className="h-5 w-5 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {upcomingTopics.map((topic, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center gap-3 text-sm"
-                      >
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
-                          {index + 1}
-                        </span>
-                        <span className="text-foreground">{topic}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
-              {/* Quick Access */}
-              <Card className="border-0 shadow-sm bg-gradient-to-br from-primary/10 to-accent/10">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                    <FlaskConical className="h-5 w-5 text-primary" />
-                    Dica de Estudo
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Comece pelos mecanismos de ação dos fármacos antes de
-                    estudar as indicações clínicas. Isso facilita a compreensão
-                    das interações e efeitos adversos.
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Badge variant="secondary">Farmacodinâmica</Badge>
-                    <Badge variant="secondary">Receptores</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+          {/* Welcome Box */}
+          <div className="mt-8 p-5 bg-card rounded-xl border border-border">
+            <h3 className="font-medium text-foreground mb-1">Bem-vindo</h3>
+            <p className="text-sm text-muted-foreground">
+              Navegue pelas seções para acessar os conteúdos.
+            </p>
           </div>
         </div>
       </main>

@@ -2,18 +2,18 @@
 
 import Link from "next/link"
 import { Sidebar } from "@/components/sidebar"
-import { FlaskConical } from "lucide-react"
+import { Pill } from "lucide-react"
 
-// Edite esta lista para adicionar seus casos clínicos
-const casos = [
+// Edite esta lista para adicionar seus fármacos
+const farmacos = [
   {
     id: "exemplo-1",
-    title: "Título do Caso",
-    description: "Descrição breve do caso clínico.",
+    title: "Nome do Fármaco",
+    description: "Classe farmacológica.",
   },
 ]
 
-export default function CasosClinicosPage() {
+export default function FarmacosPage() {
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
@@ -22,34 +22,34 @@ export default function CasosClinicosPage() {
         <div className="max-w-3xl mx-auto px-4 py-8 lg:py-12">
           <div className="mb-8">
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-              Casos Clínicos
+              Fármacos
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Casos práticos para estudo.
+              Consulta rápida de medicamentos.
             </p>
           </div>
 
           <div className="space-y-3">
-            {casos.map((caso) => (
+            {farmacos.map((item) => (
               <Link
-                key={caso.id}
-                href={`/casos-clinicos/${caso.id}`}
+                key={item.id}
+                href={`/farmacos/${item.id}`}
                 className="flex items-start gap-4 p-4 bg-card rounded-xl border border-border hover:border-primary/40 transition-all"
               >
-                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                  <FlaskConical className="h-5 w-5" />
+                <div className="w-10 h-10 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0">
+                  <Pill className="h-5 w-5" />
                 </div>
                 <div>
-                  <h2 className="font-medium text-foreground">{caso.title}</h2>
-                  <p className="text-sm text-muted-foreground">{caso.description}</p>
+                  <h2 className="font-medium text-foreground">{item.title}</h2>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
                 </div>
               </Link>
             ))}
 
-            {casos.length === 0 && (
+            {farmacos.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
-                <FlaskConical className="h-10 w-10 mx-auto mb-3 opacity-50" />
-                <p>Nenhum caso cadastrado.</p>
+                <Pill className="h-10 w-10 mx-auto mb-3 opacity-50" />
+                <p>Nenhum fármaco cadastrado.</p>
               </div>
             )}
           </div>
