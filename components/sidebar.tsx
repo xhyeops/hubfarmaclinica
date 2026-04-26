@@ -60,7 +60,7 @@ export function Sidebar() {
       {/* Mobile Header */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 h-14 bg-card/80 backdrop-blur-xl border-b border-border lg:hidden">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/20">
             <GraduationCap className="h-4 w-4 text-white" />
           </div>
           <span className="font-semibold text-foreground">Farmacologia</span>
@@ -71,14 +71,9 @@ export function Sidebar() {
             <Button
               variant="ghost"
               size="icon"
-              className="text-muted-foreground"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
-              {theme === "dark" ? (
-                <Sun className="h-4 w-4" />
-              ) : (
-                <Moon className="h-4 w-4" />
-              )}
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
           )}
 
@@ -88,74 +83,13 @@ export function Sidebar() {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-
-      {/* Mobile Menu */}
-      <nav
-        className={cn(
-          "fixed top-14 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-b border-border transition-all duration-300 lg:hidden",
-          isOpen
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 -translate-y-4 pointer-events-none"
-        )}
-      >
-        <div className="p-4 flex flex-col gap-1">
-          {menuItems.map((item) => {
-            const Icon = item.icon
-            const isActive = pathname === item.href
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium",
-                  isActive
-                    ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20"
-                    : "hover:bg-secondary text-foreground"
-                )}
-              >
-                <Icon className="h-4 w-4" />
-                {item.title}
-              </Link>
-            )
-          })}
-
-          {user && (
-            <div className="mt-4 rounded-xl border border-border bg-background/40 p-3">
-              <p className="text-xs text-muted-foreground mb-1">
-                Logado como:
-              </p>
-
-              <p className="text-sm font-semibold break-all text-foreground mb-3">
-                {user.email}
-              </p>
-
-              <button
-                onClick={handleLogout}
-                className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-red-400 hover:bg-red-500/10 transition"
-              >
-                <LogOut size={16} />
-                Sair
-              </button>
-            </div>
-          )}
-        </div>
-      </nav>
-
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 flex-col bg-card/50 backdrop-blur-xl border-r border-border">
+        
         {/* Logo */}
         <div className="p-6 border-b border-border">
           <Link href="/" className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/25">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/25">
               <GraduationCap className="h-5 w-5 text-white" />
             </div>
 
@@ -184,7 +118,7 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-sm",
                       isActive
-                        ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-medium shadow-lg shadow-primary/20"
+                        ? "bg-rose-500/20 text-rose-400 font-medium shadow-[0_0_10px_rgba(244,63,94,0.25)]"
                         : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                     )}
                   >
@@ -203,7 +137,7 @@ export function Sidebar() {
             <Button
               variant="ghost"
               size="sm"
-              className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl h-10"
+              className="w-full justify-start gap-3 rounded-xl h-10"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
               {theme === "dark" ? (
