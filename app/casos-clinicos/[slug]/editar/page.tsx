@@ -3,13 +3,17 @@
 import { use, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Save } from "lucide-react"
+import { ArrowLeft, Save, Stethoscope } from "lucide-react"
 
 import { Sidebar } from "@/components/sidebar"
 import { AdminOnly } from "@/components/AdminOnly"
 import { supabase } from "@/lib/supabase"
 
-export default function EditarCasoPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function EditarCasoPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
   return (
     <AdminOnly>
       <EditarCasoForm params={params} />
@@ -26,7 +30,6 @@ function EditarCasoForm({ params }: { params: Promise<{ slug: string }> }) {
 
   const [form, setForm] = useState({
     titulo: "",
-    dificuldade: "Básico",
     sistema: "",
     paciente: "",
     queixa: "",
@@ -52,7 +55,6 @@ function EditarCasoForm({ params }: { params: Promise<{ slug: string }> }) {
 
       setForm({
         titulo: data.titulo || "",
-        dificuldade: data.dificuldade || "Básico",
         sistema: data.sistema || "",
         paciente: data.paciente || "",
         queixa: data.queixa || "",
@@ -69,7 +71,7 @@ function EditarCasoForm({ params }: { params: Promise<{ slug: string }> }) {
   }, [slug])
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
@@ -77,8 +79,8 @@ function EditarCasoForm({ params }: { params: Promise<{ slug: string }> }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    if (!form.titulo || !form.dificuldade || !form.sistema) {
-      alert("Preencha título, dificuldade e sistema.")
+    if (!form.titulo || !form.sistema) {
+      alert("Preencha título e sistema.")
       return
     }
 
@@ -106,8 +108,10 @@ function EditarCasoForm({ params }: { params: Promise<{ slug: string }> }) {
         <Sidebar />
 
         <main className="lg:pl-64 pt-14 lg:pt-0">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
-            <p className="text-muted-foreground">Carregando caso...</p>
+          <div className="min-h-screen flex items-center justify-center px-4">
+            <p className="text-sm text-muted-foreground">
+              Carregando caso clínico...
+            </p>
           </div>
         </main>
       </div>
@@ -122,105 +126,108 @@ function EditarCasoForm({ params }: { params: Promise<{ slug: string }> }) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
           <Link
             href={`/casos-clinicos/${slug}`}
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 group"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-200 mb-8 group transition"
           >
             <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             Voltar para o caso
           </Link>
 
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
-              Editar Caso Clínico
-            </h1>
-            <p className="text-muted-foreground">
-              Atualize as informações do caso clínico.
-            </p>
-          </div>
+          <section className="mb-8 rounded-[1.5rem] border border-rose-900/30 bg-gradient-to-br from-rose-950/60 via-card to-red-950/20 p-5 sm:p-6 shadow-xl shadow-rose-950/20">
+            <div className="flex items-start gap-4">
+              <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-rose-950/60 border border-rose-800/30 text-rose-200 shadow-lg shadow-rose-950/30">
+                <Stethoscope className="h-7 w-7" />
+              </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              name="titulo"
-              placeholder="Título"
-              value={form.titulo}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-            />
+              <div>
+                <div className="mb-3 inline-flex items-center rounded-full bg-rose-950/50 border border-rose-800/30 px-3 py-1 text-xs font-medium text-rose-200">
+                  Editar caso clínico
+                </div>
 
-            <select
-              name="dificuldade"
-              value={form.dificuldade}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-            >
-              <option value="Básico">Básico</option>
-              <option value="Intermediário">Intermediário</option>
-              <option value="Avançado">Avançado</option>
-            </select>
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-2">
+                  Editar Caso Clínico
+                </h1>
 
-            <input
-              name="sistema"
-              placeholder="Sistema"
-              value={form.sistema}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-            />
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Atualize as informações do caso clínico.
+                </p>
+              </div>
+            </div>
+          </section>
 
-            <textarea
-              name="paciente"
-              placeholder="Paciente"
-              value={form.paciente}
-              onChange={handleChange}
-              className="w-full min-h-24 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-            />
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-3xl border border-border bg-card p-5 sm:p-6 space-y-5"
+          >
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">
+                Título
+              </label>
 
-            <textarea
-              name="queixa"
-              placeholder="Queixa principal"
-              value={form.queixa}
-              onChange={handleChange}
-              className="w-full min-h-24 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-            />
+              <input
+                name="titulo"
+                placeholder="Ex: Hipertensão Arterial Resistente"
+                value={form.titulo}
+                onChange={handleChange}
+                required
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+              />
+            </div>
 
-            <textarea
-              name="historia"
-              placeholder="História clínica"
-              value={form.historia}
-              onChange={handleChange}
-              className="w-full min-h-32 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-            />
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">
+                Sistema / área
+              </label>
 
-            <textarea
-              name="exame"
-              placeholder="Exame físico"
-              value={form.exame}
-              onChange={handleChange}
-              className="w-full min-h-32 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-            />
+              <input
+                name="sistema"
+                placeholder="Ex: Cardiovascular"
+                value={form.sistema}
+                onChange={handleChange}
+                required
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+              />
+            </div>
 
-            <textarea
-              name="conduta"
-              placeholder="Conduta"
-              value={form.conduta}
-              onChange={handleChange}
-              className="w-full min-h-32 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-            />
+            {[
+              ["paciente", "Paciente", "Dados principais do paciente"],
+              ["queixa", "Queixa principal", "Motivo principal da consulta"],
+              ["historia", "História clínica", "História da doença atual e antecedentes"],
+              ["exame", "Exame físico", "Achados relevantes do exame físico"],
+              ["conduta", "Conduta", "Conduta terapêutica ou plano inicial"],
+              ["discussao", "Discussão farmacológica", "Discussão sobre fármacos, mecanismos, interações e justificativas"],
+            ].map(([name, label, placeholder]) => (
+              <div key={name}>
+                <label className="mb-2 block text-sm font-medium text-foreground">
+                  {label}
+                </label>
 
-            <textarea
-              name="discussao"
-              placeholder="Discussão farmacológica"
-              value={form.discussao}
-              onChange={handleChange}
-              className="w-full min-h-40 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-            />
+                <textarea
+                  name={name}
+                  placeholder={placeholder}
+                  value={form[name as keyof typeof form]}
+                  onChange={handleChange}
+                  className="w-full min-h-32 rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+                />
+              </div>
+            ))}
 
-            <button
-              type="submit"
-              disabled={salvando}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 font-medium text-white transition hover:bg-emerald-700 disabled:opacity-60"
-            >
-              <Save className="h-4 w-4" />
-              {salvando ? "Salvando..." : "Salvar Alterações"}
-            </button>
+            <div className="flex flex-wrap gap-3 pt-2">
+              <button
+                type="submit"
+                disabled={salvando}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-900 to-red-900 px-5 py-3 text-sm font-medium text-white transition hover:from-rose-800 hover:to-red-800 disabled:opacity-60"
+              >
+                <Save className="h-4 w-4" />
+                {salvando ? "Salvando..." : "Salvar alterações"}
+              </button>
+
+              <Link
+                href={`/casos-clinicos/${slug}`}
+                className="rounded-xl border border-rose-800/30 bg-rose-950/20 px-5 py-3 text-sm font-medium text-rose-200 transition hover:bg-rose-900/30"
+              >
+                Cancelar
+              </Link>
+            </div>
           </form>
         </div>
       </main>
