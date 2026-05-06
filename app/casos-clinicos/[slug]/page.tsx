@@ -15,15 +15,6 @@ import Link from "next/link"
 import { use, useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 
-const dificuldadeColors: Record<string, string> = {
-  Básico:
-    "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400",
-  Intermediário:
-    "bg-amber-500/10 border border-amber-500/20 text-amber-400",
-  Avançado:
-    "bg-rose-950/50 border border-rose-800/30 text-rose-200",
-}
-
 export default function CasoDetailPage({
   params,
 }: {
@@ -131,38 +122,31 @@ export default function CasoDetailPage({
             </AdminOnly>
           </div>
 
-          <section className="mb-8 rounded-[1.5rem] border border-rose-900/30 bg-gradient-to-br from-rose-950/60 via-card to-red-950/20 p-5 sm:p-6 shadow-xl shadow-rose-950/20">
-            <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-              <div className="inline-flex h-13 w-13 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-rose-950/60 border border-rose-800/30 text-rose-200 shadow-lg shadow-rose-950/30">
-                <Stethoscope className="h-7 w-7" />
+          <section className="mb-8">
+            <div className="flex items-start gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-950/50 border border-rose-800/30 text-rose-200">
+                <Stethoscope className="h-5 w-5" />
               </div>
 
-              <div className="flex-1">
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-rose-950/50 border border-rose-800/30 px-3 py-1 text-xs font-medium text-rose-200">
-                  Caso Clínico
+              <div className="min-w-0">
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <span className="inline-flex rounded-full bg-rose-950/50 border border-rose-800/30 px-2.5 py-0.5 text-xs font-medium text-rose-200">
+                    Caso Clínico
+                  </span>
+
+                  {data.sistema && (
+                    <span className="inline-flex rounded-full bg-rose-950/30 border border-rose-800/20 px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                      {data.sistema}
+                    </span>
+                  )}
                 </div>
 
-                <h1 className="text-2xl sm:text-4xl font-bold leading-tight text-foreground">
+                <h1 className="text-2xl sm:text-3xl font-bold leading-tight text-foreground">
                   {data.titulo}
                 </h1>
 
-                <div className="mt-4 flex flex-wrap items-center gap-2">
-                  <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                      dificuldadeColors[data.dificuldade] ||
-                      "bg-rose-950/50 border border-rose-800/30 text-rose-200"
-                    }`}
-                  >
-                    {data.dificuldade || "Sem dificuldade"}
-                  </span>
-
-                  <span className="inline-flex items-center rounded-full bg-rose-950/40 border border-rose-800/30 px-3 py-1 text-xs font-medium text-rose-200">
-                    {data.sistema || "Geral"}
-                  </span>
-                </div>
-
                 {data.queixa && (
-                  <p className="mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  <p className="mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed">
                     {data.queixa}
                   </p>
                 )}
@@ -178,7 +162,7 @@ export default function CasoDetailPage({
               >
                 <div className="flex items-center gap-3 border-b border-border bg-rose-950/20 px-5 sm:px-6 py-4">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-950/50 border border-rose-800/30 text-rose-200">
-                    <Icon className="h-4.5 w-4.5" />
+                    <Icon className="h-4 w-4" />
                   </div>
 
                   <h3 className="font-semibold text-foreground">{label}</h3>
