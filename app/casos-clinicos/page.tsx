@@ -13,15 +13,6 @@ import {
   Plus,
 } from "lucide-react"
 
-const dificuldadeColors: Record<string, string> = {
-  Básico:
-    "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400",
-  Intermediário:
-    "bg-amber-500/10 border border-amber-500/20 text-amber-400",
-  Avançado:
-    "bg-rose-950/50 border border-rose-800/30 text-rose-200",
-}
-
 export default function CasosClinicosPage() {
   const [casos, setCasos] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -126,18 +117,11 @@ export default function CasosClinicosPage() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            dificuldadeColors[caso.dificuldade] ||
-                            "bg-rose-950/50 border border-rose-800/30 text-rose-200"
-                          }`}
-                        >
-                          {caso.dificuldade || "Sem dificuldade"}
-                        </span>
-
-                        <span className="inline-flex items-center rounded-full bg-rose-950/40 border border-rose-800/30 px-2.5 py-0.5 text-xs font-medium text-rose-200">
-                          {caso.sistema || "Geral"}
-                        </span>
+                        {caso.sistema && (
+                          <span className="inline-flex items-center rounded-full bg-rose-950/40 border border-rose-800/30 px-2.5 py-0.5 text-xs font-medium text-rose-200">
+                            {caso.sistema}
+                          </span>
+                        )}
                       </div>
 
                       <h2 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-rose-200 transition-colors mb-1">
