@@ -4,39 +4,90 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import ReactMarkdown from "react-markdown"
-import { ArrowLeft, FileText, BookOpen, Pencil } from "lucide-react"
+import { ArrowLeft, BookOpen, FileText, Pencil } from "lucide-react"
 
 import { Sidebar } from "@/components/sidebar"
 import { AdminOnly } from "@/components/AdminOnly"
 import { supabase } from "@/lib/supabase"
 
+type Resumo = {
+  id: string
+  slug: string
+  titulo: string
+  description?: string | null
+  categoria?: string | null
+  conteudo?: string | null
+}
+
 export default function ResumoDetailPage() {
-  const { slug } = useParams()
-  const [resumo, setResumo] = useState<any>(null)
+  const params = useParams()
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug
+
+  const [resumo, setResumo] = useState<Resumo | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function carregarResumo() {
+      if (!slug) return
+
+      setLoading(true)
+
       const { data, error } = await supabase
         .from("resumos")
         .select("*")
         .eq("slug", slug)
         .single()
 
-      if (error) {
+      if (error || !data) {
         console.error("Erro ao carregar resumo:", error)
+        setResumo(null)
+        setLoading(false)
         return
       }
 
       setResumo(data)
+      setLoading(false)
     }
 
-    if (slug) carregarResumo()
+    carregarResumo()
   }, [slug])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Sidebar />
+
+        <main className="lg:pl-64 pt-14 lg:pt-0">
+          <div className="min-h-screen flex items-center justify-center px-4">
+            <p className="text-sm text-muted-foreground">
+              Carregando resumo...
+            </p>
+          </div>
+        </main>
+      </div>
+    )
+  }
 
   if (!resumo) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-muted-foreground">
-        Carregando...
+      <div className="min-h-screen bg-background">
+        <Sidebar />
+
+        <main className="lg:pl-64 pt-14 lg:pt-0">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+            <Link
+              href="/resumos"
+              className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-300 mb-8 transition"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Voltar para Resumos
+            </Link>
+
+            <div className="rounded-2xl border border-border bg-card p-8 text-center">
+              <p className="text-muted-foreground">Resumo não encontrado.</p>
+            </div>
+          </div>
+        </main>
       </div>
     )
   }
@@ -49,28 +100,36 @@ export default function ResumoDetailPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
           <Link
             href="/resumos"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-300 mb-7 transition"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar para Resumos
           </Link>
 
-          <div className="mb-8">
-            <div className="flex items-center justify-between gap-4 mb-4">
+          <div className="mb-7">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg">
-                  <FileText className="h-6 w-6" />
+                <div className="w-11 h-11 flex shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-rose-900 to-red-900 text-white shadow-lg shadow-rose-950/30">
+                  <FileText className="h-5 w-5" />
                 </div>
 
-                <h1 className="text-2xl font-bold text-foreground">
-                  {resumo.titulo}
-                </h1>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-bold leading-tight text-foreground">
+                    {resumo.titulo}
+                  </h1>
+
+                  {resumo.description && (
+                    <p className="mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                      {resumo.description}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <AdminOnly>
                 <Link
                   href={`/admin/editar-resumo/${resumo.slug}`}
-                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-emerald-400"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-900 to-red-900 px-4 py-2 text-sm font-medium text-white transition hover:from-rose-800 hover:to-red-800"
                 >
                   <Pencil size={16} />
                   Editar
@@ -78,60 +137,110 @@ export default function ResumoDetailPage() {
               </AdminOnly>
             </div>
 
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400">
-              <BookOpen className="h-3 w-3" />
-              {resumo.categoria}
-            </span>
+            {resumo.categoria && (
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-rose-950/50 border border-rose-800/30 text-rose-300">
+                <BookOpen className="h-3 w-3" />
+                {resumo.categoria}
+              </span>
+            )}
           </div>
 
-          <div className="bg-card rounded-2xl border border-border p-6 sm:p-8">
-            <ReactMarkdown
-              components={{
-                h1: ({ children }) => (
-                  <h1 className="text-3xl font-bold mb-4 text-foreground">
-                    {children}
-                  </h1>
-                ),
-                h2: ({ children }) => (
-                  <h2 className="text-2xl font-semibold mt-6 mb-3 text-foreground">
-                    {children}
-                  </h2>
-                ),
-                h3: ({ children }) => (
-                  <h3 className="text-xl font-semibold mt-5 mb-2 text-foreground">
-                    {children}
-                  </h3>
-                ),
-                p: ({ children }) => (
-                  <p className="mb-3 leading-relaxed text-foreground">
-                    {children}
-                  </p>
-                ),
-                ul: ({ children }) => (
-                  <ul className="list-disc pl-6 mb-4 space-y-1">
-                    {children}
-                  </ul>
-                ),
-                li: ({ children }) => (
-                  <li className="text-foreground">{children}</li>
-                ),
-                strong: ({ children }) => (
-                  <strong className="font-bold text-blue-400">
-                    {children}
-                  </strong>
-                ),
-                img: ({ src, alt }) => (
-                  <img
-                    src={src || ""}
-                    alt={alt || ""}
-                    className="my-6 max-w-full rounded-xl border border-border shadow-lg"
-                  />
-                ),
-              }}
-            >
-              {resumo.conteudo || ""}
-            </ReactMarkdown>
-          </div>
+          <article className="rounded-2xl border border-border bg-card p-5 sm:p-7">
+            <div className="mx-auto max-w-3xl">
+              <ReactMarkdown
+                components={{
+                  h1: ({ children }) => (
+                    <h1 className="text-2xl sm:text-3xl font-bold mb-5 mt-1 text-foreground leading-tight">
+                      {children}
+                    </h1>
+                  ),
+
+                  h2: ({ children }) => (
+                    <h2 className="text-xl sm:text-2xl font-bold mt-8 mb-3 text-foreground leading-tight border-l-4 border-rose-800 pl-3">
+                      {children}
+                    </h2>
+                  ),
+
+                  h3: ({ children }) => (
+                    <h3 className="text-lg font-semibold mt-6 mb-2 text-foreground">
+                      {children}
+                    </h3>
+                  ),
+
+                  p: ({ node, children }: any) => {
+                    const hasImage = node?.children?.some(
+                      (child: any) => child.tagName === "img"
+                    )
+
+                    if (hasImage) {
+                      return <div className="my-5">{children}</div>
+                    }
+
+                    return (
+                      <p className="mb-4 text-[15.5px] sm:text-base leading-7 text-foreground/90">
+                        {children}
+                      </p>
+                    )
+                  },
+
+                  strong: ({ children }) => (
+                    <strong className="font-bold text-rose-300">
+                      {children}
+                    </strong>
+                  ),
+
+                  ul: ({ children }) => (
+                    <ul className="list-disc pl-6 mb-5 space-y-2 text-[15.5px] leading-7 text-foreground/90">
+                      {children}
+                    </ul>
+                  ),
+
+                  ol: ({ children }) => (
+                    <ol className="list-decimal pl-6 mb-5 space-y-2 text-[15.5px] leading-7 text-foreground/90">
+                      {children}
+                    </ol>
+                  ),
+
+                  li: ({ children }) => <li>{children}</li>,
+
+                  blockquote: ({ children }) => (
+                    <blockquote className="my-5 rounded-xl border-l-4 border-rose-800 bg-rose-950/40 px-4 py-3 text-[15.5px] leading-7 text-foreground/90">
+                      {children}
+                    </blockquote>
+                  ),
+
+                  img: ({ src, alt }) => (
+                    <img
+                      src={src || ""}
+                      alt={alt || ""}
+                      className="mx-auto my-5 max-h-[280px] w-auto max-w-full rounded-xl border border-border bg-white object-contain shadow-md shadow-black/10"
+                    />
+                  ),
+
+                  a: ({ href, children }) => (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-rose-300 underline underline-offset-4 hover:text-rose-200"
+                    >
+                      {children}
+                    </a>
+                  ),
+
+                  hr: () => <hr className="my-7 border-border" />,
+
+                  code: ({ children }) => (
+                    <code className="rounded-md bg-secondary px-1.5 py-0.5 text-sm text-rose-300">
+                      {children}
+                    </code>
+                  ),
+                }}
+              >
+                {resumo.conteudo || ""}
+              </ReactMarkdown>
+            </div>
+          </article>
         </div>
       </main>
     </div>
