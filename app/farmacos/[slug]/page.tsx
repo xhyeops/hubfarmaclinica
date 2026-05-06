@@ -1,6 +1,7 @@
 "use client"
 
 import { Sidebar } from "@/components/sidebar"
+import { AdminOnly } from "@/components/AdminOnly"
 import {
   ArrowLeft,
   Pill,
@@ -9,6 +10,7 @@ import {
   CheckCircle,
   XCircle,
   Zap,
+  Pencil,
 } from "lucide-react"
 import Link from "next/link"
 import { use, useEffect, useState } from "react"
@@ -79,8 +81,7 @@ export default function FarmacoDetailPage({
   }) {
     const colors = {
       rose: "bg-rose-950/50 border-rose-800/30 text-rose-200",
-      emerald:
-        "bg-emerald-500/10 border-emerald-500/20 text-emerald-400",
+      emerald: "bg-emerald-500/10 border-emerald-500/20 text-emerald-400",
       red: "bg-red-500/10 border-red-500/20 text-red-400",
       amber: "bg-amber-500/10 border-amber-500/20 text-amber-400",
       blue: "bg-blue-500/10 border-blue-500/20 text-blue-400",
@@ -95,9 +96,7 @@ export default function FarmacoDetailPage({
             <Icon className="h-4 w-4" />
           </div>
 
-          <h3 className="font-semibold text-foreground">
-            {title}
-          </h3>
+          <h3 className="font-semibold text-foreground">{title}</h3>
         </div>
 
         <div className="p-5 sm:p-6">{children}</div>
@@ -157,13 +156,25 @@ export default function FarmacoDetailPage({
 
       <main className="lg:pl-64 pt-14 lg:pt-0">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
-          <Link
-            href="/farmacos"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-200 mb-8 group transition"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-            Voltar para Fármacos
-          </Link>
+          <div className="mb-8 flex items-center justify-between gap-4">
+            <Link
+              href="/farmacos"
+              className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-200 group transition"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+              Voltar para Fármacos
+            </Link>
+
+            <AdminOnly>
+              <Link
+                href={`/farmacos/${slug}/editar`}
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-rose-900 to-red-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:from-rose-800 hover:to-red-800"
+              >
+                <Pencil className="h-4 w-4" />
+                Editar
+              </Link>
+            </AdminOnly>
+          </div>
 
           <section className="mb-8">
             <div className="flex items-start gap-3">
@@ -198,22 +209,14 @@ export default function FarmacoDetailPage({
           </section>
 
           <div className="grid gap-4">
-            <InfoCard
-              title="Mecanismo de Ação"
-              icon={Beaker}
-              color="rose"
-            >
+            <InfoCard title="Mecanismo de Ação" icon={Beaker} color="rose">
               <p className="text-sm sm:text-base leading-7 text-foreground/90 whitespace-pre-wrap">
                 {data.mecanismo || "Não informado"}
               </p>
             </InfoCard>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <InfoCard
-                title="Indicações"
-                icon={CheckCircle}
-                color="emerald"
-              >
+              <InfoCard title="Indicações" icon={CheckCircle} color="emerald">
                 {lista(data.indicacao).length > 0 ? (
                   <ul className="space-y-2">
                     {lista(data.indicacao).map((item, i) => (
@@ -226,17 +229,11 @@ export default function FarmacoDetailPage({
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Não informado
-                  </p>
+                  <p className="text-sm text-muted-foreground">Não informado</p>
                 )}
               </InfoCard>
 
-              <InfoCard
-                title="Contraindicações"
-                icon={XCircle}
-                color="red"
-              >
+              <InfoCard title="Contraindicações" icon={XCircle} color="red">
                 {lista(data.contraindicacoes).length > 0 ? (
                   <ul className="space-y-2">
                     {lista(data.contraindicacoes).map((item, i) => (
@@ -249,19 +246,13 @@ export default function FarmacoDetailPage({
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Não informado
-                  </p>
+                  <p className="text-sm text-muted-foreground">Não informado</p>
                 )}
               </InfoCard>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <InfoCard
-                title="Efeitos Adversos"
-                icon={AlertCircle}
-                color="amber"
-              >
+              <InfoCard title="Efeitos Adversos" icon={AlertCircle} color="amber">
                 {lista(data.efeitos_adversos).length > 0 ? (
                   <ul className="space-y-2">
                     {lista(data.efeitos_adversos).map((item, i) => (
@@ -274,17 +265,11 @@ export default function FarmacoDetailPage({
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Não informado
-                  </p>
+                  <p className="text-sm text-muted-foreground">Não informado</p>
                 )}
               </InfoCard>
 
-              <InfoCard
-                title="Interações"
-                icon={Zap}
-                color="blue"
-              >
+              <InfoCard title="Interações" icon={Zap} color="blue">
                 {lista(data.interacoes).length > 0 ? (
                   <ul className="space-y-2">
                     {lista(data.interacoes).map((item, i) => (
@@ -297,9 +282,7 @@ export default function FarmacoDetailPage({
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Não informado
-                  </p>
+                  <p className="text-sm text-muted-foreground">Não informado</p>
                 )}
               </InfoCard>
             </div>
