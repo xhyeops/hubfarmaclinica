@@ -11,13 +11,18 @@ import {
   ChevronRight,
   RotateCcw,
   Pencil,
+  AlertCircle,
 } from "lucide-react"
 import Link from "next/link"
 import { useState, use, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { supabase } from "@/lib/supabase"
 
-export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function QuestaoDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
   const { slug } = use(params)
 
   const [tema, setTema] = useState<any>(null)
@@ -71,9 +76,14 @@ export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: 
     return (
       <div className="min-h-screen bg-background">
         <Sidebar />
+
         <main className="lg:pl-64 pt-14 lg:pt-0">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
-            <p className="text-muted-foreground">Carregando quiz...</p>
+            <div className="rounded-2xl border border-border bg-card p-8 text-center">
+              <p className="text-muted-foreground">
+                Carregando questões...
+              </p>
+            </div>
           </div>
         </main>
       </div>
@@ -84,16 +94,29 @@ export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: 
     return (
       <div className="min-h-screen bg-background">
         <Sidebar />
+
         <main className="lg:pl-64 pt-14 lg:pt-0">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
-            <Link href="/questoes" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 group">
+            <Link
+              href="/questoes"
+              className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-200 mb-8 group transition"
+            >
               <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
               Voltar
             </Link>
 
-            <div className="text-center py-16">
-              <Target className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h2 className="text-xl font-semibold">Quiz não encontrado ou sem questões</h2>
+            <div className="rounded-2xl border border-border bg-card p-8 text-center">
+              <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-950/50 border border-rose-800/30 text-rose-200">
+                <AlertCircle className="h-8 w-8" />
+              </div>
+
+              <h2 className="text-xl font-semibold text-foreground mb-1">
+                Quiz não encontrado
+              </h2>
+
+              <p className="text-muted-foreground">
+                Este tema ainda não possui questões cadastradas.
+              </p>
             </div>
           </div>
         </main>
@@ -111,7 +134,9 @@ export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: 
     question.alternativa_d,
   ]
 
-  const corretaIndex = ["A", "B", "C", "D"].indexOf(String(question.correta).toUpperCase())
+  const corretaIndex = ["A", "B", "C", "D"].indexOf(
+    String(question.correta).toUpperCase()
+  )
 
   const handleSelect = (index: number) => {
     if (showResult) return
@@ -155,39 +180,50 @@ export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: 
 
         <main className="lg:pl-64 pt-14 lg:pt-0">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
-            <div className="bg-card rounded-2xl border border-border p-8 text-center">
+            <div className="rounded-3xl border border-border bg-card p-8 text-center">
               <div
                 className={cn(
-                  "inline-flex items-center justify-center w-20 h-20 rounded-full mb-6",
-                  percentage >= 70 ? "bg-emerald-500/10" : "bg-amber-500/10"
+                  "inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 border",
+                  percentage >= 70
+                    ? "bg-rose-950/50 border-rose-800/30"
+                    : "bg-amber-500/10 border-amber-500/20"
                 )}
               >
                 <span
                   className={cn(
                     "text-3xl font-bold",
-                    percentage >= 70 ? "text-emerald-600" : "text-amber-600"
+                    percentage >= 70
+                      ? "text-rose-200"
+                      : "text-amber-400"
                   )}
                 >
                   {percentage}%
                 </span>
               </div>
 
-              <h2 className="text-2xl font-bold text-foreground mb-2">
-                Quiz Finalizado!
+              <h2 className="text-3xl font-bold text-foreground mb-2">
+                Quiz Finalizado
               </h2>
 
               <p className="text-muted-foreground mb-6">
-                Você acertou {score} de {totalQuestions} questões
+                Você acertou {score} de {totalQuestions}{" "}
+                {totalQuestions === 1 ? "questão" : "questões"}.
               </p>
 
-              <div className="flex gap-3 justify-center">
-                <Button variant="outline" onClick={handleRestart}>
+              <div className="flex flex-wrap gap-3 justify-center">
+                <Button
+                  variant="outline"
+                  onClick={handleRestart}
+                  className="border-rose-800/30 bg-rose-950/20 hover:bg-rose-900/30"
+                >
                   <RotateCcw className="h-4 w-4 mr-2" />
                   Refazer
                 </Button>
 
                 <Link href="/questoes">
-                  <Button>Voltar para Questões</Button>
+                  <Button className="bg-gradient-to-r from-rose-900 to-red-900 hover:from-rose-800 hover:to-red-800">
+                    Voltar para Questões
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -206,7 +242,7 @@ export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: 
           <div className="mb-8 flex items-center justify-between gap-4">
             <Link
               href="/questoes"
-              className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground group"
+              className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-200 group transition"
             >
               <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
               Voltar para Questões
@@ -215,7 +251,7 @@ export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: 
             <AdminOnly>
               <Link
                 href={`/questoes/${slug}/editar`}
-                className="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-amber-700"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-rose-900 to-red-900 px-4 py-2 text-sm font-medium text-white transition hover:from-rose-800 hover:to-red-800"
               >
                 <Pencil className="h-4 w-4" />
                 Editar
@@ -223,38 +259,52 @@ export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: 
             </AdminOnly>
           </div>
 
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg">
+          <section className="mb-8">
+            <div className="flex items-start gap-3">
+              <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-950/50 border border-rose-800/30 text-rose-200">
                 <Target className="h-5 w-5" />
               </div>
 
               <div>
-                <h1 className="text-xl font-bold text-foreground">{tema.titulo}</h1>
-                <p className="text-sm text-muted-foreground">
+                <div className="mb-2 inline-flex rounded-full bg-rose-950/50 border border-rose-800/30 px-2.5 py-0.5 text-xs font-medium text-rose-200">
+                  Questões
+                </div>
+
+                <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
+                  {tema.titulo}
+                </h1>
+
+                <p className="mt-2 text-sm text-muted-foreground">
                   {tema.descricao || "Questões comentadas"}
                 </p>
               </div>
             </div>
 
-            <div className="mt-4">
+            <div className="mt-6">
               <div className="flex items-center justify-between text-sm mb-2">
                 <span className="text-muted-foreground">
                   Questão {currentQuestion + 1} de {totalQuestions}
                 </span>
-                <span className="font-medium text-foreground">{score} acertos</span>
+
+                <span className="font-medium text-rose-200">
+                  {score} acertos
+                </span>
               </div>
 
-              <div className="h-2 bg-secondary rounded-full overflow-hidden">
+              <div className="h-2 rounded-full bg-secondary overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-amber-500 to-orange-600 transition-all duration-300"
-                  style={{ width: `${((currentQuestion + 1) / totalQuestions) * 100}%` }}
+                  className="h-full bg-gradient-to-r from-rose-900 to-red-900 transition-all duration-300"
+                  style={{
+                    width: `${
+                      ((currentQuestion + 1) / totalQuestions) * 100
+                    }%`,
+                  }}
                 />
               </div>
             </div>
-          </div>
+          </section>
 
-          <div className="bg-card rounded-2xl border border-border overflow-hidden">
+          <div className="overflow-hidden rounded-3xl border border-border bg-card">
             <div className="p-6 sm:p-8">
               <p className="text-lg font-medium text-foreground mb-6 leading-relaxed">
                 {question.pergunta}
@@ -273,21 +323,36 @@ export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: 
                       onClick={() => handleSelect(index)}
                       disabled={showResult}
                       className={cn(
-                        "w-full flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all",
-                        !showResult && isSelected && "border-amber-500 bg-amber-500/5",
-                        !showResult && !isSelected && "border-border hover:border-amber-500/50 hover:bg-muted/50",
-                        showCorrect && "border-emerald-500 bg-emerald-500/10",
-                        showWrong && "border-rose-500 bg-rose-500/10",
-                        showResult && !showCorrect && !showWrong && "opacity-50"
+                        "w-full flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition-all duration-200",
+                        !showResult &&
+                          isSelected &&
+                          "border-rose-800 bg-rose-950/20",
+                        !showResult &&
+                          !isSelected &&
+                          "border-border hover:border-rose-800/40 hover:bg-muted/50",
+                        showCorrect &&
+                          "border-emerald-500 bg-emerald-500/10",
+                        showWrong &&
+                          "border-rose-500 bg-rose-500/10",
+                        showResult &&
+                          !showCorrect &&
+                          !showWrong &&
+                          "opacity-50"
                       )}
                     >
                       <span
                         className={cn(
-                          "w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium shrink-0",
-                          !showResult && isSelected && "bg-amber-500 text-white",
-                          !showResult && !isSelected && "bg-secondary text-secondary-foreground",
-                          showCorrect && "bg-emerald-500 text-white",
-                          showWrong && "bg-rose-500 text-white"
+                          "w-8 h-8 rounded-xl flex items-center justify-center text-sm font-medium shrink-0",
+                          !showResult &&
+                            isSelected &&
+                            "bg-gradient-to-r from-rose-900 to-red-900 text-white",
+                          !showResult &&
+                            !isSelected &&
+                            "bg-secondary text-secondary-foreground",
+                          showCorrect &&
+                            "bg-emerald-500 text-white",
+                          showWrong &&
+                            "bg-rose-500 text-white"
                         )}
                       >
                         {showCorrect ? (
@@ -299,33 +364,42 @@ export default function QuestaoDetailPage({ params }: { params: Promise<{ slug: 
                         )}
                       </span>
 
-                      <span className="flex-1 text-foreground">{alt}</span>
+                      <span className="flex-1 text-foreground">
+                        {alt}
+                      </span>
                     </button>
                   )
                 })}
               </div>
 
               {showResult && (
-                <div className="mt-6 p-4 rounded-xl bg-muted/50 border border-border">
-                  <p className="text-sm font-medium text-foreground mb-1">Comentário:</p>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {question.comentario || "Sem comentário cadastrado."}
+                <div className="mt-6 rounded-2xl border border-rose-800/20 bg-rose-950/20 p-5">
+                  <p className="text-sm font-semibold text-foreground mb-2">
+                    Comentário
+                  </p>
+
+                  <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
+                    {question.comentario ||
+                      "Sem comentário cadastrado."}
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="px-6 sm:px-8 py-4 border-t border-border bg-muted/30 flex justify-end gap-3">
+            <div className="border-t border-border bg-muted/20 px-6 sm:px-8 py-4 flex justify-end gap-3">
               {!showResult ? (
                 <Button
                   onClick={handleConfirm}
                   disabled={selectedAnswer === null}
-                  className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
+                  className="bg-gradient-to-r from-rose-900 to-red-900 hover:from-rose-800 hover:to-red-800"
                 >
                   Confirmar
                 </Button>
               ) : (
-                <Button onClick={handleNext}>
+                <Button
+                  onClick={handleNext}
+                  className="bg-gradient-to-r from-rose-900 to-red-900 hover:from-rose-800 hover:to-red-800"
+                >
                   {currentQuestion < totalQuestions - 1 ? (
                     <>
                       Próxima
