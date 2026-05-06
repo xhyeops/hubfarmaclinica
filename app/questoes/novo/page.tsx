@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Save } from "lucide-react"
+import { ArrowLeft, Save, Target } from "lucide-react"
 
 import { Sidebar } from "@/components/sidebar"
 import { AdminOnly } from "@/components/AdminOnly"
@@ -37,7 +37,9 @@ function NovoTemaForm() {
       .replace(/\s+/g, "-")
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
@@ -51,12 +53,12 @@ function NovoTemaForm() {
 
     setSalvando(true)
 
-    const slug = gerarSlug(form.titulo)
+    const slug = `${gerarSlug(form.titulo)}-${Date.now()}`
 
     const { error } = await supabase.from("temas_questoes").insert([
       {
         titulo: form.titulo,
-        descricao: form.descricao,
+        descricao: form.descricao || null,
         slug,
       },
     ])
@@ -80,46 +82,84 @@ function NovoTemaForm() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
           <Link
             href="/questoes"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 group"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-200 mb-8 group transition"
           >
             <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             Voltar para Questões
           </Link>
 
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
-              Novo Tema de Questões
-            </h1>
-            <p className="text-muted-foreground">
-              Crie um tema e depois adicione as questões.
-            </p>
-          </div>
+          <section className="mb-8 rounded-[1.5rem] border border-rose-900/30 bg-gradient-to-br from-rose-950/60 via-card to-red-950/20 p-5 sm:p-6 shadow-xl shadow-rose-950/20">
+            <div className="flex items-start gap-4">
+              <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-rose-950/60 border border-rose-800/30 text-rose-200 shadow-lg shadow-rose-950/30">
+                <Target className="h-7 w-7" />
+              </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              name="titulo"
-              placeholder="Título do tema"
-              value={form.titulo}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-amber-500"
-            />
+              <div>
+                <div className="mb-3 inline-flex items-center rounded-full bg-rose-950/50 border border-rose-800/30 px-3 py-1 text-xs font-medium text-rose-200">
+                  Novo tema
+                </div>
 
-            <textarea
-              name="descricao"
-              placeholder="Descrição"
-              value={form.descricao}
-              onChange={handleChange}
-              className="w-full min-h-28 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-amber-500"
-            />
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-2">
+                  Novo Tema de Questões
+                </h1>
 
-            <button
-              type="submit"
-              disabled={salvando}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-600 px-4 py-3 font-medium text-white transition hover:bg-amber-700 disabled:opacity-60"
-            >
-              <Save className="h-4 w-4" />
-              {salvando ? "Salvando..." : "Criar Tema"}
-            </button>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Crie um tema e depois adicione as questões.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-3xl border border-border bg-card p-5 sm:p-6 space-y-5"
+          >
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">
+                Título do tema
+              </label>
+
+              <input
+                name="titulo"
+                placeholder="Ex: Farmacocinética"
+                value={form.titulo}
+                onChange={handleChange}
+                required
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">
+                Descrição
+              </label>
+
+              <textarea
+                name="descricao"
+                placeholder="Ex: Absorção, distribuição, metabolismo e excreção de fármacos."
+                value={form.descricao}
+                onChange={handleChange}
+                className="w-full min-h-28 rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-3 pt-2">
+              <button
+                type="submit"
+                disabled={salvando}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-900 to-red-900 px-5 py-3 text-sm font-medium text-white transition hover:from-rose-800 hover:to-red-800 disabled:opacity-60"
+              >
+                <Save className="h-4 w-4" />
+                {salvando ? "Salvando..." : "Criar tema"}
+              </button>
+
+              <Link
+                href="/questoes"
+                className="rounded-xl border border-rose-800/30 bg-rose-950/20 px-5 py-3 text-sm font-medium text-rose-200 transition hover:bg-rose-900/30"
+              >
+                Cancelar
+              </Link>
+            </div>
           </form>
         </div>
       </main>
