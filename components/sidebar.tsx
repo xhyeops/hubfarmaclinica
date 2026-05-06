@@ -13,7 +13,6 @@ import {
   X,
   Sun,
   Moon,
-  GraduationCap,
   LogOut,
   Layers,
 } from "lucide-react"
@@ -73,7 +72,7 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 text-sm",
                   isActive
-                    ? "bg-rose-500/20 text-rose-400 font-semibold shadow-lg shadow-rose-500/15"
+                    ? "bg-rose-950/70 text-rose-200 font-semibold shadow-lg shadow-rose-950/30 border border-rose-800/40"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
                 )}
               >
@@ -136,11 +135,13 @@ export function Sidebar() {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 h-14 bg-card/85 backdrop-blur-xl border-b border-border lg:hidden">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/20">
-            <GraduationCap className="h-4 w-4 text-white" />
+          <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-rose-950 via-rose-900 to-red-900 flex items-center justify-center shadow-lg shadow-rose-950/40 border border-rose-700/30">
+            <Pill className="h-4 w-4 text-white" />
           </div>
 
-          <span className="font-semibold text-foreground">Farmacologia</span>
+          <span className="font-semibold text-foreground">
+            Farmacologia Clínica
+          </span>
         </Link>
 
         <div className="flex items-center gap-1">
@@ -204,15 +205,15 @@ export function Sidebar() {
       <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 flex-col bg-card/50 backdrop-blur-xl border-r border-border">
         <div className="p-6 border-b border-border">
           <Link href="/" className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/25">
-              <GraduationCap className="h-5 w-5 text-white" />
+            <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-rose-950 via-rose-900 to-red-900 flex items-center justify-center shadow-lg shadow-rose-950/40 border border-rose-700/30">
+              <Pill className="h-5 w-5 text-white" />
             </div>
 
             <div>
-              <h1 className="font-bold text-foreground">Farmacologia</h1>
-              <p className="text-xs text-muted-foreground">
-                Monitoria Clínica
-              </p>
+              <h1 className="font-bold leading-tight text-foreground">
+                Farmacologia Clínica
+              </h1>
+              <p className="text-xs text-muted-foreground">Monitoria</p>
             </div>
           </Link>
         </div>
