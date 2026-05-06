@@ -11,16 +11,24 @@ import {
   ArrowRight,
   Sparkles,
   Users,
+  Layers,
 } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 
 const actions = [
   {
-    title: "Revisar conteúdo",
+    title: "Revisar resumos",
     description: "Leia resumos objetivos antes da aula, prova ou monitoria.",
     href: "/resumos",
     icon: FileText,
     gradient: "from-blue-500 to-indigo-600",
+  },
+  {
+    title: "Estudar com flashcards",
+    description: "Revise conceitos importantes de forma rápida e ativa.",
+    href: "/flashcards",
+    icon: Layers,
+    gradient: "from-purple-500 to-violet-600",
   },
   {
     title: "Praticar questões",
@@ -41,6 +49,7 @@ const actions = [
 export default function HomePage() {
   const [counts, setCounts] = useState({
     resumos: 0,
+    flashcards: 0,
     casos: 0,
     questoes: 0,
     farmacos: 0,
@@ -48,8 +57,9 @@ export default function HomePage() {
 
   useEffect(() => {
     async function fetchCounts() {
-      const [resumos, casos, questoes, farmacos] = await Promise.all([
+      const [resumos, flashcards, casos, questoes, farmacos] = await Promise.all([
         supabase.from("resumos").select("*", { count: "exact", head: true }),
+        supabase.from("flashcards").select("*", { count: "exact", head: true }),
         supabase.from("casos_clinicos").select("*", { count: "exact", head: true }),
         supabase.from("questoes").select("*", { count: "exact", head: true }),
         supabase.from("farmacos").select("*", { count: "exact", head: true }),
@@ -57,6 +67,7 @@ export default function HomePage() {
 
       setCounts({
         resumos: resumos.count || 0,
+        flashcards: flashcards.count || 0,
         casos: casos.count || 0,
         questoes: questoes.count || 0,
         farmacos: farmacos.count || 0,
@@ -71,12 +82,10 @@ export default function HomePage() {
       <Sidebar />
 
       <main className="lg:pl-64 pt-14 lg:pt-0">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 lg:py-16">
-          
-          {/* HERO LIMPO */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 lg:py-16">
           <section className="mb-12">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-rose-500/10 text-rose-400 text-sm font-medium">
+            <div className="rounded-3xl border border-rose-500/20 bg-gradient-to-br from-rose-500/10 via-background to-background p-6 sm:p-8 lg:p-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-5 rounded-full bg-rose-500/10 text-rose-400 text-sm font-medium">
                 <Sparkles className="h-3.5 w-3.5" />
                 Hub de Estudos
               </div>
@@ -89,22 +98,22 @@ export default function HomePage() {
               </h1>
 
               <p className="text-lg text-muted-foreground max-w-2xl">
-                Materiais da monitoria para revisar, praticar e aplicar farmacologia clínica de forma mais objetiva.
+                Materiais da monitoria para revisar, memorizar, praticar e aplicar
+                farmacologia clínica de forma mais objetiva.
               </p>
 
-              <p className="text-sm text-muted-foreground mt-4">
+              <p className="text-sm text-muted-foreground mt-5">
                 Desenvolvido para monitoria acadêmica.
               </p>
             </div>
           </section>
 
-          {/* AÇÕES PRINCIPAIS */}
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-foreground mb-4">
-              O que fazer agora?
+              O que estudar agora?
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
               {actions.map((action) => (
                 <Link
                   key={action.href}
@@ -117,11 +126,11 @@ export default function HomePage() {
                     <action.icon className="h-6 w-6" />
                   </div>
 
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between gap-3 mb-2">
                     <h3 className="text-lg font-semibold text-foreground group-hover:text-rose-400 transition">
                       {action.title}
                     </h3>
-                    <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-rose-400 group-hover:translate-x-1 transition-all" />
+                    <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground group-hover:text-rose-400 group-hover:translate-x-1 transition-all" />
                   </div>
 
                   <p className="text-sm text-muted-foreground">
@@ -132,7 +141,6 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* FARMACOS */}
           <section className="mb-8">
             <Link
               href="/farmacos"
@@ -157,8 +165,7 @@ export default function HomePage() {
             </Link>
           </section>
 
-          {/* EQUIPE + CONTADORES */}
-          <section className="grid md:grid-cols-2 gap-4">
+          <section className="grid lg:grid-cols-2 gap-4">
             <div className="rounded-2xl bg-card border border-border p-5 transition hover:border-rose-500/20">
               <div className="flex items-center gap-2 mb-3 text-rose-400">
                 <Users className="h-4 w-4" />
@@ -174,35 +181,51 @@ export default function HomePage() {
 
               <p className="text-sm text-muted-foreground mt-1">
                 Professor:{" "}
-                <span className="text-foreground font-medium">Paulo Yuri Firmino</span>
+                <span className="text-foreground font-medium">
+                  Paulo Yuri Firmino
+                </span>
               </p>
             </div>
 
             <div className="rounded-2xl bg-card border border-border p-5 transition hover:border-rose-500/20">
-              <div className="grid grid-cols-4 gap-3 text-center">
+              <div className="grid grid-cols-5 gap-3 text-center">
                 <div>
-                  <div className="text-xl font-bold text-rose-400">{counts.resumos}</div>
+                  <div className="text-xl font-bold text-rose-400">
+                    {counts.resumos}
+                  </div>
                   <div className="text-xs text-muted-foreground">Resumos</div>
                 </div>
 
                 <div>
-                  <div className="text-xl font-bold text-rose-400">{counts.questoes}</div>
+                  <div className="text-xl font-bold text-rose-400">
+                    {counts.flashcards}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Cards</div>
+                </div>
+
+                <div>
+                  <div className="text-xl font-bold text-rose-400">
+                    {counts.questoes}
+                  </div>
                   <div className="text-xs text-muted-foreground">Questões</div>
                 </div>
 
                 <div>
-                  <div className="text-xl font-bold text-rose-400">{counts.casos}</div>
+                  <div className="text-xl font-bold text-rose-400">
+                    {counts.casos}
+                  </div>
                   <div className="text-xs text-muted-foreground">Casos</div>
                 </div>
 
                 <div>
-                  <div className="text-xl font-bold text-rose-400">{counts.farmacos}</div>
+                  <div className="text-xl font-bold text-rose-400">
+                    {counts.farmacos}
+                  </div>
                   <div className="text-xs text-muted-foreground">Fármacos</div>
                 </div>
               </div>
             </div>
           </section>
-
         </div>
       </main>
     </div>
