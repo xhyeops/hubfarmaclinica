@@ -59,6 +59,7 @@ export default function FarmacoDetailPage({
 
   function lista(texto?: string | null) {
     if (!texto) return []
+
     return texto
       .split("\n")
       .map((item) => item.trim())
@@ -68,20 +69,35 @@ export default function FarmacoDetailPage({
   function InfoCard({
     title,
     icon: Icon,
+    color,
     children,
   }: {
     title: string
     icon: any
+    color: "rose" | "emerald" | "red" | "amber" | "blue"
     children: React.ReactNode
   }) {
+    const colors = {
+      rose: "bg-rose-950/50 border-rose-800/30 text-rose-200",
+      emerald:
+        "bg-emerald-500/10 border-emerald-500/20 text-emerald-400",
+      red: "bg-red-500/10 border-red-500/20 text-red-400",
+      amber: "bg-amber-500/10 border-amber-500/20 text-amber-400",
+      blue: "bg-blue-500/10 border-blue-500/20 text-blue-400",
+    }
+
     return (
       <section className="overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:border-rose-800/40 hover:shadow-lg hover:shadow-rose-950/20">
         <div className="flex items-center gap-3 border-b border-border bg-rose-950/20 px-5 sm:px-6 py-4">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-950/50 border border-rose-800/30 text-rose-200">
+          <div
+            className={`flex h-9 w-9 items-center justify-center rounded-xl border ${colors[color]}`}
+          >
             <Icon className="h-4 w-4" />
           </div>
 
-          <h3 className="font-semibold text-foreground">{title}</h3>
+          <h3 className="font-semibold text-foreground">
+            {title}
+          </h3>
         </div>
 
         <div className="p-5 sm:p-6">{children}</div>
@@ -182,14 +198,22 @@ export default function FarmacoDetailPage({
           </section>
 
           <div className="grid gap-4">
-            <InfoCard title="Mecanismo de Ação" icon={Beaker}>
+            <InfoCard
+              title="Mecanismo de Ação"
+              icon={Beaker}
+              color="rose"
+            >
               <p className="text-sm sm:text-base leading-7 text-foreground/90 whitespace-pre-wrap">
                 {data.mecanismo || "Não informado"}
               </p>
             </InfoCard>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <InfoCard title="Indicações" icon={CheckCircle}>
+              <InfoCard
+                title="Indicações"
+                icon={CheckCircle}
+                color="emerald"
+              >
                 {lista(data.indicacao).length > 0 ? (
                   <ul className="space-y-2">
                     {lista(data.indicacao).map((item, i) => (
@@ -208,7 +232,11 @@ export default function FarmacoDetailPage({
                 )}
               </InfoCard>
 
-              <InfoCard title="Contraindicações" icon={XCircle}>
+              <InfoCard
+                title="Contraindicações"
+                icon={XCircle}
+                color="red"
+              >
                 {lista(data.contraindicacoes).length > 0 ? (
                   <ul className="space-y-2">
                     {lista(data.contraindicacoes).map((item, i) => (
@@ -229,7 +257,11 @@ export default function FarmacoDetailPage({
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <InfoCard title="Efeitos Adversos" icon={AlertCircle}>
+              <InfoCard
+                title="Efeitos Adversos"
+                icon={AlertCircle}
+                color="amber"
+              >
                 {lista(data.efeitos_adversos).length > 0 ? (
                   <ul className="space-y-2">
                     {lista(data.efeitos_adversos).map((item, i) => (
@@ -248,7 +280,11 @@ export default function FarmacoDetailPage({
                 )}
               </InfoCard>
 
-              <InfoCard title="Interações" icon={Zap}>
+              <InfoCard
+                title="Interações"
+                icon={Zap}
+                color="blue"
+              >
                 {lista(data.interacoes).length > 0 ? (
                   <ul className="space-y-2">
                     {lista(data.interacoes).map((item, i) => (
