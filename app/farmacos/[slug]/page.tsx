@@ -1,7 +1,15 @@
 "use client"
 
 import { Sidebar } from "@/components/sidebar"
-import { ArrowLeft, Pill, Beaker, AlertCircle, CheckCircle, XCircle, Zap } from "lucide-react"
+import {
+  ArrowLeft,
+  Pill,
+  Beaker,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  Zap,
+} from "lucide-react"
 import Link from "next/link"
 import { use, useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
@@ -10,16 +18,20 @@ type Farmaco = {
   id: string
   slug: string
   nome: string
-  classe: string
-  categoria: string
-  mecanismo: string
-  indicacao: string
-  contraindicacoes?: string
-  efeitos_adversos?: string
-  interacoes?: string
+  classe: string | null
+  categoria: string | null
+  mecanismo: string | null
+  indicacao: string | null
+  contraindicacoes?: string | null
+  efeitos_adversos?: string | null
+  interacoes?: string | null
 }
 
-export default function FarmacoDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function FarmacoDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
   const { slug } = use(params)
   const [data, setData] = useState<Farmaco | null>(null)
   const [loading, setLoading] = useState(true)
@@ -45,7 +57,7 @@ export default function FarmacoDetailPage({ params }: { params: Promise<{ slug: 
     carregarFarmaco()
   }, [slug])
 
-  function lista(texto?: string) {
+  function lista(texto?: string | null) {
     if (!texto) return []
     return texto
       .split("\n")
@@ -53,13 +65,40 @@ export default function FarmacoDetailPage({ params }: { params: Promise<{ slug: 
       .filter(Boolean)
   }
 
+  function InfoCard({
+    title,
+    icon: Icon,
+    children,
+  }: {
+    title: string
+    icon: any
+    children: React.ReactNode
+  }) {
+    return (
+      <section className="overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:border-rose-800/40 hover:shadow-lg hover:shadow-rose-950/20">
+        <div className="flex items-center gap-3 border-b border-border bg-rose-950/20 px-5 sm:px-6 py-4">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-950/50 border border-rose-800/30 text-rose-200">
+            <Icon className="h-4 w-4" />
+          </div>
+
+          <h3 className="font-semibold text-foreground">{title}</h3>
+        </div>
+
+        <div className="p-5 sm:p-6">{children}</div>
+      </section>
+    )
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
         <Sidebar />
+
         <main className="lg:pl-64 pt-14 lg:pt-0">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
-            <p className="text-muted-foreground">Carregando...</p>
+          <div className="min-h-screen flex items-center justify-center px-4">
+            <p className="text-sm text-muted-foreground">
+              Carregando fármaco...
+            </p>
           </div>
         </main>
       </div>
@@ -70,16 +109,25 @@ export default function FarmacoDetailPage({ params }: { params: Promise<{ slug: 
     return (
       <div className="min-h-screen bg-background">
         <Sidebar />
+
         <main className="lg:pl-64 pt-14 lg:pt-0">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
-            <Link href="/farmacos" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 group">
+            <Link
+              href="/farmacos"
+              className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-200 mb-8 group transition"
+            >
               <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
               Voltar
             </Link>
 
-            <div className="text-center py-16">
-              <Pill className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h2 className="text-xl font-semibold">Fármaco não encontrado</h2>
+            <div className="rounded-2xl border border-border bg-card p-8 text-center">
+              <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-950/50 border border-rose-800/30 text-rose-200">
+                <Pill className="h-8 w-8" />
+              </div>
+
+              <h2 className="text-xl font-semibold text-foreground">
+                Fármaco não encontrado
+              </h2>
             </div>
           </div>
         </main>
@@ -95,88 +143,129 @@ export default function FarmacoDetailPage({ params }: { params: Promise<{ slug: 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
           <Link
             href="/farmacos"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 group"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-200 mb-8 group transition"
           >
             <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             Voltar para Fármacos
           </Link>
 
-          <div className="mb-8">
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-lg">
-                <Pill className="h-7 w-7" />
+          <section className="mb-8">
+            <div className="flex items-start gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-950/50 border border-rose-800/30 text-rose-200 shadow-lg shadow-rose-950/20">
+                <Pill className="h-6 w-6" />
               </div>
 
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-foreground">{data.nome}</h1>
-                <p className="text-muted-foreground">{data.classe}</p>
+              <div className="min-w-0">
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <span className="inline-flex rounded-full bg-rose-950/50 border border-rose-800/30 px-2.5 py-0.5 text-xs font-medium text-rose-200">
+                    Consulta rápida
+                  </span>
+
+                  {data.categoria && (
+                    <span className="inline-flex rounded-full bg-rose-950/30 border border-rose-800/20 px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                      {data.categoria}
+                    </span>
+                  )}
+                </div>
+
+                <h1 className="text-2xl sm:text-3xl font-bold leading-tight text-foreground">
+                  {data.nome}
+                </h1>
+
+                {data.classe && (
+                  <p className="mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                    {data.classe}
+                  </p>
+                )}
               </div>
             </div>
-
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-600 dark:text-rose-400">
-              {data.categoria}
-            </span>
-          </div>
+          </section>
 
           <div className="grid gap-4">
-            <div className="bg-card rounded-2xl border border-border overflow-hidden">
-              <div className="flex items-center gap-3 px-6 py-4 border-b border-border">
-                <Beaker className="h-5 w-5 text-rose-500" />
-                <h3 className="font-semibold">Mecanismo de Ação</h3>
-              </div>
-              <div className="p-6 text-sm leading-relaxed">{data.mecanismo}</div>
+            <InfoCard title="Mecanismo de Ação" icon={Beaker}>
+              <p className="text-sm sm:text-base leading-7 text-foreground/90 whitespace-pre-wrap">
+                {data.mecanismo || "Não informado"}
+              </p>
+            </InfoCard>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <InfoCard title="Indicações" icon={CheckCircle}>
+                {lista(data.indicacao).length > 0 ? (
+                  <ul className="space-y-2">
+                    {lista(data.indicacao).map((item, i) => (
+                      <li
+                        key={i}
+                        className="text-sm sm:text-base leading-7 text-foreground/90"
+                      >
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Não informado
+                  </p>
+                )}
+              </InfoCard>
+
+              <InfoCard title="Contraindicações" icon={XCircle}>
+                {lista(data.contraindicacoes).length > 0 ? (
+                  <ul className="space-y-2">
+                    {lista(data.contraindicacoes).map((item, i) => (
+                      <li
+                        key={i}
+                        className="text-sm sm:text-base leading-7 text-foreground/90"
+                      >
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Não informado
+                  </p>
+                )}
+              </InfoCard>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-card rounded-2xl border border-border overflow-hidden">
-                <div className="flex items-center gap-3 px-6 py-4 border-b">
-                  <CheckCircle className="h-5 w-5 text-emerald-500" />
-                  <h3>Indicações</h3>
-                </div>
-                <ul className="p-6 space-y-2">
-                  {lista(data.indicacao).map((item, i) => (
-                    <li key={i} className="text-sm">• {item}</li>
-                  ))}
-                </ul>
-              </div>
+              <InfoCard title="Efeitos Adversos" icon={AlertCircle}>
+                {lista(data.efeitos_adversos).length > 0 ? (
+                  <ul className="space-y-2">
+                    {lista(data.efeitos_adversos).map((item, i) => (
+                      <li
+                        key={i}
+                        className="text-sm sm:text-base leading-7 text-foreground/90"
+                      >
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Não informado
+                  </p>
+                )}
+              </InfoCard>
 
-              <div className="bg-card rounded-2xl border border-border overflow-hidden">
-                <div className="flex items-center gap-3 px-6 py-4 border-b">
-                  <XCircle className="h-5 w-5 text-rose-500" />
-                  <h3>Contraindicações</h3>
-                </div>
-                <ul className="p-6 space-y-2">
-                  {lista(data.contraindicacoes).map((item, i) => (
-                    <li key={i} className="text-sm">• {item}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-card rounded-2xl border border-border overflow-hidden">
-                <div className="flex items-center gap-3 px-6 py-4 border-b">
-                  <AlertCircle className="h-5 w-5 text-amber-500" />
-                  <h3>Efeitos Adversos</h3>
-                </div>
-                <ul className="p-6 space-y-2">
-                  {lista(data.efeitos_adversos).map((item, i) => (
-                    <li key={i} className="text-sm">• {item}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-card rounded-2xl border border-border overflow-hidden">
-                <div className="flex items-center gap-3 px-6 py-4 border-b">
-                  <Zap className="h-5 w-5 text-blue-500" />
-                  <h3>Interações</h3>
-                </div>
-                <ul className="p-6 space-y-2">
-                  {lista(data.interacoes).map((item, i) => (
-                    <li key={i} className="text-sm">• {item}</li>
-                  ))}
-                </ul>
-              </div>
+              <InfoCard title="Interações" icon={Zap}>
+                {lista(data.interacoes).length > 0 ? (
+                  <ul className="space-y-2">
+                    {lista(data.interacoes).map((item, i) => (
+                      <li
+                        key={i}
+                        className="text-sm sm:text-base leading-7 text-foreground/90"
+                      >
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Não informado
+                  </p>
+                )}
+              </InfoCard>
             </div>
           </div>
         </div>
