@@ -4,7 +4,14 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Sidebar } from "@/components/sidebar"
 import { AdminOnly } from "@/components/AdminOnly"
-import { HelpCircle, ArrowRight, CheckCircle2, Target, Plus } from "lucide-react"
+import {
+  HelpCircle,
+  ArrowRight,
+  CheckCircle2,
+  Target,
+  Plus,
+  AlertCircle,
+} from "lucide-react"
 import { supabase } from "@/lib/supabase"
 
 export default function QuestoesPage() {
@@ -56,25 +63,35 @@ export default function QuestoesPage() {
       <main className="lg:pl-64 pt-14 lg:pt-0">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
           <div className="mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-medium">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-rose-950/50 border border-rose-800/30 text-rose-200 text-sm font-medium">
               <HelpCircle className="h-3.5 w-3.5" />
-              <span>Teste seu Conhecimento</span>
+              Teste seu conhecimento
             </div>
 
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-2">
                   Questões
                 </h1>
-                <p className="text-muted-foreground">
+
+                <p className="text-sm sm:text-base text-muted-foreground max-w-2xl">
                   Pratique com questões comentadas e fixe o conteúdo estudado.
                 </p>
+
+                {!loading && (
+                  <p className="mt-3 text-sm text-rose-200">
+                    {quizzes.length}{" "}
+                    {quizzes.length === 1
+                      ? "tema cadastrado"
+                      : "temas cadastrados"}
+                  </p>
+                )}
               </div>
 
               <AdminOnly>
                 <Link
                   href="/questoes/novo"
-                  className="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-amber-700"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-rose-900 to-red-900 px-5 text-sm font-semibold text-white shadow-lg shadow-rose-950/30 transition-all duration-300 hover:-translate-y-0.5 hover:from-rose-800 hover:to-red-800 hover:shadow-xl hover:shadow-rose-950/40"
                 >
                   <Plus className="h-4 w-4" />
                   Novo Tema
@@ -83,26 +100,40 @@ export default function QuestoesPage() {
             </div>
           </div>
 
-          {loading && (
-            <div className="text-center py-10 text-muted-foreground">
-              Carregando questões...
+          {loading ? (
+            <div className="rounded-2xl border border-border bg-card p-8 text-center">
+              <p className="text-muted-foreground">Carregando questões...</p>
             </div>
-          )}
+          ) : quizzes.length === 0 ? (
+            <div className="rounded-2xl border border-border bg-card p-8 text-center">
+              <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-950/50 border border-rose-800/30 text-rose-200">
+                <AlertCircle className="h-8 w-8" />
+              </div>
 
-          {!loading && (
+              <h3 className="text-lg font-medium text-foreground mb-1">
+                Nenhuma questão ainda
+              </h3>
+
+              <p className="text-sm text-muted-foreground">
+                As questões aparecerão aqui quando forem adicionadas.
+              </p>
+            </div>
+          ) : (
             <div className="grid sm:grid-cols-2 gap-4">
               {quizzes.map((quiz) => (
                 <Link
                   key={quiz.id}
                   href={`/questoes/${quiz.slug}`}
-                  className="group relative overflow-hidden rounded-2xl bg-card border border-border p-6 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/5 hover:-translate-y-0.5 hover:border-amber-500/30"
+                  className="group relative overflow-hidden rounded-2xl bg-card border border-border p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:border-rose-800/40 hover:shadow-xl hover:shadow-rose-950/20"
                 >
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg mb-4">
+                  <div className="absolute left-0 top-5 bottom-5 w-1 rounded-r-full bg-rose-800/0 transition group-hover:bg-rose-700" />
+
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-950/50 border border-rose-800/30 text-rose-200 shadow-lg shadow-rose-950/20 transition group-hover:scale-110 group-hover:bg-rose-900/40 mb-4">
                     <Target className="h-6 w-6" />
                   </div>
 
                   <div className="space-y-2">
-                    <h2 className="text-lg font-semibold text-foreground group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    <h2 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-rose-200 transition-colors">
                       {quiz.titulo}
                     </h2>
 
@@ -113,28 +144,15 @@ export default function QuestoesPage() {
                     <div className="flex items-center justify-between pt-2">
                       <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                         <CheckCircle2 className="h-4 w-4" />
-                        {quiz.total_questoes} questões
+                        {quiz.total_questoes}{" "}
+                        {quiz.total_questoes === 1 ? "questão" : "questões"}
                       </span>
 
-                      <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
+                      <ArrowRight className="h-5 w-5 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-rose-200" />
                     </div>
                   </div>
                 </Link>
               ))}
-            </div>
-          )}
-
-          {!loading && quizzes.length === 0 && (
-            <div className="text-center py-16">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary mb-4">
-                <HelpCircle className="h-8 w-8 text-muted-foreground" />
-              </div>
-              <h3 className="text-lg font-medium text-foreground mb-1">
-                Nenhuma questão ainda
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                As questões aparecerão aqui quando forem adicionadas.
-              </p>
             </div>
           )}
         </div>
