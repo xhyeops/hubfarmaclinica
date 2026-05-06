@@ -97,7 +97,10 @@ export default function EditarFlashcardPage() {
     const confirmar = confirm("Tem certeza que deseja excluir este flashcard?")
     if (!confirmar) return
 
-    const { error } = await supabase.from("flashcard_itens").delete().eq("id", id)
+    const { error } = await supabase
+      .from("flashcard_itens")
+      .delete()
+      .eq("id", id)
 
     if (error) {
       alert("Erro ao excluir flashcard.")
@@ -125,7 +128,7 @@ export default function EditarFlashcardPage() {
 
             <div className="mb-8">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-rose-950/50 border border-rose-800/30 text-rose-200 text-sm font-medium">
-                Editar flashcard
+                Flashcards
               </div>
 
               <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-foreground">
@@ -133,7 +136,7 @@ export default function EditarFlashcardPage() {
               </h1>
 
               <p className="text-muted-foreground">
-                Atualize ou exclua este flashcard.
+                Atualize a pergunta, resposta, título e categoria.
               </p>
             </div>
 
