@@ -2,9 +2,17 @@
 
 import Link from "next/link"
 import { Sidebar } from "@/components/sidebar"
-import { Pill, ArrowRight, Search, Beaker, AlertCircle } from "lucide-react"
+import {
+  Pill,
+  ArrowRight,
+  Search,
+  Beaker,
+  AlertCircle,
+  Plus,
+} from "lucide-react"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
+import { AdminOnly } from "@/components/AdminOnly"
 
 type Farmaco = {
   id: string
@@ -38,10 +46,11 @@ export default function FarmacosPage() {
     carregarFarmacos()
   }, [])
 
-  const farmacosFiltrados = farmacos.filter((farmaco) =>
-    farmaco.nome?.toLowerCase().includes(busca.toLowerCase()) ||
-    farmaco.classe?.toLowerCase().includes(busca.toLowerCase()) ||
-    farmaco.categoria?.toLowerCase().includes(busca.toLowerCase())
+  const farmacosFiltrados = farmacos.filter(
+    (farmaco) =>
+      farmaco.nome?.toLowerCase().includes(busca.toLowerCase()) ||
+      farmaco.classe?.toLowerCase().includes(busca.toLowerCase()) ||
+      farmaco.categoria?.toLowerCase().includes(busca.toLowerCase())
   )
 
   function criarSlug(nome: string) {
@@ -85,6 +94,16 @@ export default function FarmacosPage() {
                   </p>
                 )}
               </div>
+
+              <AdminOnly>
+                <Link
+                  href="/farmacos/novo"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-rose-900 to-red-900 px-5 text-sm font-semibold text-white shadow-lg shadow-rose-950/30 transition-all duration-300 hover:-translate-y-0.5 hover:from-rose-800 hover:to-red-800 hover:shadow-xl hover:shadow-rose-950/40"
+                >
+                  <Plus className="h-4 w-4" />
+                  Novo Fármaco
+                </Link>
+              </AdminOnly>
             </div>
           </div>
 
