@@ -3,17 +3,20 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Eye, Save, Stethoscope, User, Activity, AlertTriangle } from "lucide-react"
+import {
+  ArrowLeft,
+  Eye,
+  Save,
+  Stethoscope,
+  User,
+  Activity,
+  AlertTriangle,
+  ClipboardList,
+} from "lucide-react"
 
 import { Sidebar } from "@/components/sidebar"
 import { AdminOnly } from "@/components/AdminOnly"
 import { supabase } from "@/lib/supabase"
-
-const dificuldadeColors: Record<string, string> = {
-  "Básico": "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  "Intermediário": "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-  "Avançado": "bg-rose-500/10 text-rose-600 dark:text-rose-400",
-}
 
 export default function NovoCasoPage() {
   return (
@@ -29,7 +32,6 @@ function FormNovoCaso() {
 
   const [form, setForm] = useState({
     titulo: "",
-    dificuldade: "Básico",
     sistema: "",
     paciente: "",
     queixa: "",
@@ -40,7 +42,7 @@ function FormNovoCaso() {
   })
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
@@ -59,14 +61,14 @@ function FormNovoCaso() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    if (!form.titulo || !form.dificuldade || !form.sistema) {
-      alert("Preencha título, dificuldade e sistema.")
+    if (!form.titulo || !form.sistema) {
+      alert("Preencha título e sistema.")
       return
     }
 
     setSalvando(true)
 
-    const slug = gerarSlug(form.titulo)
+    const slug = `${gerarSlug(form.titulo)}-${Date.now()}`
 
     const { error } = await supabase.from("casos_clinicos").insert([
       {
@@ -91,7 +93,7 @@ function FormNovoCaso() {
     { key: "queixa", label: "Queixa Principal", icon: AlertTriangle },
     { key: "historia", label: "História Clínica", icon: Activity },
     { key: "exame", label: "Exame Físico", icon: Stethoscope },
-    { key: "conduta", label: "Conduta", icon: Activity },
+    { key: "conduta", label: "Conduta", icon: ClipboardList },
     { key: "discussao", label: "Discussão Farmacológica", icon: Stethoscope },
   ]
 
@@ -103,142 +105,136 @@ function FormNovoCaso() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
           <Link
             href="/casos-clinicos"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 group"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-200 mb-8 group transition"
           >
             <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             Voltar para Casos Clínicos
           </Link>
 
           <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-rose-950/50 border border-rose-800/30 text-rose-200 text-sm font-medium">
+              Novo caso
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-2">
               Novo Caso Clínico
             </h1>
-            <p className="text-muted-foreground">
+
+            <p className="text-sm sm:text-base text-muted-foreground">
               Cadastre um novo caso clínico e veja a prévia antes de salvar.
             </p>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-2">
-            {/* Formulário */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                name="titulo"
-                placeholder="Título"
-                value={form.titulo}
-                onChange={handleChange}
-                className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-              />
+            <form
+              onSubmit={handleSubmit}
+              className="rounded-3xl border border-border bg-card p-5 sm:p-6 space-y-5"
+            >
+              <div>
+                <label className="mb-2 block text-sm font-medium text-foreground">
+                  Título
+                </label>
 
-              <select
-                name="dificuldade"
-                value={form.dificuldade}
-                onChange={handleChange}
-                className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-              >
-                <option value="Básico">Básico</option>
-                <option value="Intermediário">Intermediário</option>
-                <option value="Avançado">Avançado</option>
-              </select>
+                <input
+                  name="titulo"
+                  placeholder="Ex: Hipertensão arterial resistente"
+                  value={form.titulo}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+                />
+              </div>
 
-              <input
-                name="sistema"
-                placeholder="Sistema (Cardiovascular, Endócrino...)"
-                value={form.sistema}
-                onChange={handleChange}
-                className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-              />
+              <div>
+                <label className="mb-2 block text-sm font-medium text-foreground">
+                  Sistema / área
+                </label>
 
-              <textarea
-                name="paciente"
-                placeholder="Paciente"
-                value={form.paciente}
-                onChange={handleChange}
-                className="w-full min-h-24 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-              />
+                <input
+                  name="sistema"
+                  placeholder="Ex: Cardiovascular, Endócrino..."
+                  value={form.sistema}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+                />
+              </div>
 
-              <textarea
-                name="queixa"
-                placeholder="Queixa principal"
-                value={form.queixa}
-                onChange={handleChange}
-                className="w-full min-h-24 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-              />
+              {[
+                ["paciente", "Paciente", "Dados principais do paciente"],
+                ["queixa", "Queixa principal", "Motivo principal da consulta"],
+                ["historia", "História clínica", "História da doença atual e antecedentes"],
+                ["exame", "Exame físico", "Achados relevantes do exame físico"],
+                ["conduta", "Conduta", "Conduta terapêutica ou plano inicial"],
+                ["discussao", "Discussão farmacológica", "Discussão sobre fármacos, mecanismos, interações e justificativas"],
+              ].map(([name, label, placeholder]) => (
+                <div key={name}>
+                  <label className="mb-2 block text-sm font-medium text-foreground">
+                    {label}
+                  </label>
 
-              <textarea
-                name="historia"
-                placeholder="História clínica"
-                value={form.historia}
-                onChange={handleChange}
-                className="w-full min-h-28 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-              />
+                  <textarea
+                    name={name}
+                    placeholder={placeholder}
+                    value={form[name as keyof typeof form]}
+                    onChange={handleChange}
+                    className="w-full min-h-28 rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+                  />
+                </div>
+              ))}
 
-              <textarea
-                name="exame"
-                placeholder="Exame físico"
-                value={form.exame}
-                onChange={handleChange}
-                className="w-full min-h-28 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-              />
+              <div className="flex flex-wrap gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={salvando}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-900 to-red-900 px-5 py-3 text-sm font-medium text-white transition hover:from-rose-800 hover:to-red-800 disabled:opacity-60"
+                >
+                  <Save className="h-4 w-4" />
+                  {salvando ? "Salvando..." : "Salvar caso"}
+                </button>
 
-              <textarea
-                name="conduta"
-                placeholder="Conduta"
-                value={form.conduta}
-                onChange={handleChange}
-                className="w-full min-h-28 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-              />
-
-              <textarea
-                name="discussao"
-                placeholder="Discussão farmacológica"
-                value={form.discussao}
-                onChange={handleChange}
-                className="w-full min-h-32 rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-emerald-500"
-              />
-
-              <button
-                type="submit"
-                disabled={salvando}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 font-medium text-white transition hover:bg-emerald-700 disabled:opacity-60"
-              >
-                <Save className="h-4 w-4" />
-                {salvando ? "Salvando..." : "Salvar Caso"}
-              </button>
+                <Link
+                  href="/casos-clinicos"
+                  className="rounded-xl border border-rose-800/30 bg-rose-950/20 px-5 py-3 text-sm font-medium text-rose-200 transition hover:bg-rose-900/30"
+                >
+                  Cancelar
+                </Link>
+              </div>
             </form>
 
-            {/* Prévia */}
             <div className="lg:sticky lg:top-8 h-fit">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-rose-950/50 border border-rose-800/30 px-3 py-1.5 text-sm font-medium text-rose-200">
                 <Eye className="h-4 w-4" />
                 Prévia
               </div>
 
-              <div className="rounded-2xl border border-border bg-card p-6">
-                <div className="mb-6 flex flex-wrap items-center gap-3">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg">
-                    <Stethoscope className="h-6 w-6" />
+              <div className="rounded-3xl border border-border bg-card p-5 sm:p-6">
+                <div className="mb-6 flex items-start gap-3">
+                  <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-950/50 border border-rose-800/30 text-rose-200">
+                    <Stethoscope className="h-5 w-5" />
                   </div>
 
-                  <div className="flex-1">
+                  <div>
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <span className="inline-flex rounded-full bg-rose-950/50 border border-rose-800/30 px-2.5 py-0.5 text-xs font-medium text-rose-200">
+                        Caso Clínico
+                      </span>
+
+                      <span className="inline-flex rounded-full bg-rose-950/30 border border-rose-800/20 px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                        {form.sistema || "Sistema"}
+                      </span>
+                    </div>
+
                     <h2 className="text-2xl font-bold text-foreground">
                       {form.titulo || "Título do caso clínico"}
                     </h2>
+
+                    {form.queixa && (
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {form.queixa}
+                      </p>
+                    )}
                   </div>
-                </div>
-
-                <div className="mb-6 flex flex-wrap items-center gap-3">
-                  <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                      dificuldadeColors[form.dificuldade] ||
-                      "bg-secondary text-secondary-foreground"
-                    }`}
-                  >
-                    {form.dificuldade || "Dificuldade"}
-                  </span>
-
-                  <span className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
-                    {form.sistema || "Sistema"}
-                  </span>
                 </div>
 
                 <div className="space-y-4">
@@ -247,13 +243,18 @@ function FormNovoCaso() {
                       key={key}
                       className="overflow-hidden rounded-2xl border border-border bg-background"
                     >
-                      <div className="flex items-center gap-3 border-b border-border bg-muted/30 px-4 py-3">
-                        <Icon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                        <h3 className="font-semibold text-foreground">{label}</h3>
+                      <div className="flex items-center gap-3 border-b border-border bg-rose-950/20 px-4 py-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-950/50 border border-rose-800/30 text-rose-200">
+                          <Icon className="h-4 w-4" />
+                        </div>
+
+                        <h3 className="font-semibold text-foreground">
+                          {label}
+                        </h3>
                       </div>
 
                       <div className="p-4">
-                        <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">
+                        <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
                           {(form as any)[key] || "Ainda não informado."}
                         </p>
                       </div>
