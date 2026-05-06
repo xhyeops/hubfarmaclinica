@@ -166,15 +166,15 @@ export default function HomePage() {
 
       <main className="lg:pl-64 pt-14 lg:pt-0">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-8 lg:py-16">
-          <section className="mb-7 sm:mb-10 rounded-[1.5rem] sm:rounded-[2rem] border border-rose-500/10 bg-gradient-to-br from-rose-500/10 via-card to-red-500/5 p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-rose-500/5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 sm:mb-5 rounded-full bg-rose-500/10 text-rose-400 text-xs sm:text-sm font-medium">
+          <section className="mb-7 sm:mb-10 rounded-[1.5rem] sm:rounded-[2rem] border border-rose-900/30 bg-gradient-to-br from-rose-950/70 via-card to-red-950/30 p-5 sm:p-8 shadow-xl shadow-rose-950/20">
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 sm:mb-5 rounded-full bg-rose-950/60 border border-rose-800/30 text-rose-200 text-xs sm:text-sm font-medium">
               <Sparkles className="h-3.5 w-3.5" />
               Hub de Estudos
             </div>
 
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-3 sm:mb-4 leading-tight">
               Monitoria de{" "}
-              <span className="bg-gradient-to-r from-rose-400 to-red-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-rose-200 via-rose-300 to-red-300 bg-clip-text text-transparent">
                 Farmacologia Clínica
               </span>
             </h1>
@@ -187,7 +187,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-3 mt-5 sm:mt-6">
               <Link
                 href="/flashcards"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-rose-500 px-4 py-2.5 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:bg-rose-600 hover:shadow-lg hover:shadow-rose-500/20"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-900 to-red-900 px-4 py-2.5 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-rose-950/30"
               >
                 <Play className="h-4 w-4" />
                 Começar pelos flashcards
@@ -195,7 +195,7 @@ export default function HomePage() {
 
               <Link
                 href="/resumos"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-rose-500/20 bg-background/40 px-4 py-2.5 text-sm font-medium text-foreground transition hover:-translate-y-0.5 hover:border-rose-500/50 hover:text-rose-400"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-rose-800/30 bg-rose-950/20 px-4 py-2.5 text-sm font-medium text-foreground transition hover:-translate-y-0.5 hover:border-rose-700/50 hover:text-rose-200"
               >
                 Ver resumos
                 <ArrowRight className="h-4 w-4" />
@@ -209,12 +209,13 @@ export default function HomePage() {
                 <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                   Novas adições
                 </h2>
+
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   Últimos conteúdos adicionados ao hub
                 </p>
               </div>
 
-              <span className="hidden sm:inline-flex rounded-full bg-rose-500/10 px-3 py-1 text-xs font-medium text-rose-400">
+              <span className="hidden sm:inline-flex rounded-full bg-rose-950/40 border border-rose-800/30 px-3 py-1 text-xs font-medium text-rose-200">
                 Atualizações recentes
               </span>
             </div>
@@ -234,24 +235,24 @@ export default function HomePage() {
                     <Link
                       key={`${item.tipo}-${item.id}`}
                       href={item.href}
-                      className="group relative flex items-center justify-between gap-3 sm:gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:border-rose-500/40 hover:shadow-xl hover:shadow-rose-500/10"
+                      className="group relative flex items-center justify-between gap-3 sm:gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:border-rose-800/40 hover:shadow-xl hover:shadow-rose-950/20"
                     >
-                      <div className="absolute left-0 top-5 bottom-5 w-1 rounded-r-full bg-rose-500/0 transition group-hover:bg-rose-400" />
+                      <div className="absolute left-0 top-5 bottom-5 w-1 rounded-r-full bg-rose-800/0 transition group-hover:bg-rose-700" />
 
                       <div className="flex items-start gap-3 sm:gap-4">
-                        <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl bg-rose-500/10 text-rose-400 transition group-hover:scale-110 group-hover:bg-rose-500/20">
+                        <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl bg-rose-950/50 border border-rose-800/30 text-rose-200 transition group-hover:scale-110 group-hover:bg-rose-900/40">
                           <Icon className="h-5 w-5" />
                         </div>
 
                         <div>
                           <div className="mb-2 flex flex-wrap items-center gap-2">
                             {index === 0 && (
-                              <span className="rounded-full bg-red-500/10 px-2 py-0.5 text-[11px] sm:text-xs font-medium text-red-400">
+                              <span className="rounded-full bg-red-950/50 border border-red-800/30 px-2 py-0.5 text-[11px] sm:text-xs font-medium text-red-200">
                                 Novo
                               </span>
                             )}
 
-                            <span className="rounded-full bg-rose-500/10 px-2 py-0.5 text-[11px] sm:text-xs font-medium text-rose-400">
+                            <span className="rounded-full bg-rose-950/50 border border-rose-800/30 px-2 py-0.5 text-[11px] sm:text-xs font-medium text-rose-200">
                               {item.tipo}
                             </span>
 
@@ -262,7 +263,7 @@ export default function HomePage() {
                             )}
                           </div>
 
-                          <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-2 group-hover:text-rose-400 transition">
+                          <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-2 group-hover:text-rose-200 transition">
                             {item.titulo}
                           </h3>
 
@@ -273,7 +274,7 @@ export default function HomePage() {
                         </div>
                       </div>
 
-                      <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-rose-400" />
+                      <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-rose-200" />
                     </Link>
                   )
                 })}
@@ -320,19 +321,20 @@ export default function HomePage() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="group rounded-2xl bg-card border border-border p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:border-rose-500/40 hover:shadow-lg hover:shadow-rose-500/10"
+                  className="group rounded-2xl bg-card border border-border p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:border-rose-800/40 hover:shadow-lg hover:shadow-rose-950/20"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-2xl sm:text-3xl font-bold text-rose-400">
+                      <div className="text-2xl sm:text-3xl font-bold text-rose-200">
                         {item.value}
                       </div>
+
                       <div className="text-sm text-muted-foreground">
                         {item.label}
                       </div>
                     </div>
 
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-400 transition group-hover:scale-110 group-hover:bg-rose-500/20">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-950/50 border border-rose-800/30 text-rose-200 transition group-hover:scale-110 group-hover:bg-rose-900/40">
                       <Icon className="h-5 w-5" />
                     </div>
                   </div>
@@ -341,17 +343,21 @@ export default function HomePage() {
             })}
           </section>
 
-          <section className="rounded-2xl bg-card border border-border p-4 sm:p-5 transition hover:border-rose-500/20">
-            <div className="flex items-center gap-2 mb-3 text-rose-400">
+          <section className="rounded-2xl bg-card border border-border p-4 sm:p-5 transition hover:border-rose-800/30">
+            <div className="flex items-center gap-2 mb-3 text-rose-200">
               <Users className="h-4 w-4" />
               <span className="text-sm font-medium">Equipe da monitoria</span>
             </div>
 
             <p className="text-sm text-muted-foreground">
               Monitores:{" "}
-              <span className="text-rose-400 font-semibold">André Araújo</span>{" "}
+              <span className="text-rose-200 font-semibold">
+                André Araújo
+              </span>{" "}
               e{" "}
-              <span className="text-rose-400 font-semibold">Camille Alves</span>
+              <span className="text-rose-200 font-semibold">
+                Camille Alves
+              </span>
             </p>
 
             <p className="text-sm text-muted-foreground mt-1">
