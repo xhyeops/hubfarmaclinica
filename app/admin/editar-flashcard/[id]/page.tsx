@@ -117,64 +117,102 @@ export default function EditarFlashcardPage() {
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 lg:py-16">
             <Link
               href="/flashcards"
-              className="inline-flex items-center gap-2 mb-6 text-sm text-muted-foreground hover:text-rose-400 transition"
+              className="inline-flex items-center gap-2 mb-6 text-sm text-muted-foreground hover:text-rose-200 transition"
             >
               <ArrowLeft className="h-4 w-4" />
               Voltar para flashcards
             </Link>
 
-            <h1 className="text-3xl font-bold mb-2">Editar flashcard</h1>
-            <p className="text-muted-foreground mb-8">
-              Atualize ou exclua este flashcard.
-            </p>
+            <div className="mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-rose-950/50 border border-rose-800/30 text-rose-200 text-sm font-medium">
+                Editar flashcard
+              </div>
+
+              <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-foreground">
+                Editar flashcard
+              </h1>
+
+              <p className="text-muted-foreground">
+                Atualize ou exclua este flashcard.
+              </p>
+            </div>
 
             {carregando ? (
-              <p className="text-muted-foreground">Carregando...</p>
+              <div className="rounded-2xl border border-border bg-card p-8 text-center">
+                <p className="text-muted-foreground">Carregando...</p>
+              </div>
             ) : (
-              <form onSubmit={salvarAlteracoes} className="space-y-5">
-                <input
-                  value={titulo}
-                  onChange={(e) => setTitulo(e.target.value)}
-                  placeholder="Título do conjunto"
-                  required
-                  className="w-full rounded-xl border border-border bg-card px-4 py-3 outline-none focus:border-rose-500"
-                />
+              <form
+                onSubmit={salvarAlteracoes}
+                className="rounded-3xl border border-border bg-card p-5 sm:p-6 space-y-5"
+              >
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">
+                    Título do conjunto
+                  </label>
 
-                <input
-                  value={categoria}
-                  onChange={(e) => setCategoria(e.target.value)}
-                  placeholder="Categoria"
-                  className="w-full rounded-xl border border-border bg-card px-4 py-3 outline-none focus:border-rose-500"
-                />
+                  <input
+                    value={titulo}
+                    onChange={(e) => setTitulo(e.target.value)}
+                    placeholder="Título do conjunto"
+                    required
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+                  />
+                </div>
 
-                <textarea
-                  value={pergunta}
-                  onChange={(e) => setPergunta(e.target.value)}
-                  placeholder="Pergunta"
-                  required
-                  className="min-h-32 w-full rounded-xl border border-border bg-card px-4 py-3 outline-none focus:border-rose-500"
-                />
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">
+                    Categoria
+                  </label>
 
-                <textarea
-                  value={resposta}
-                  onChange={(e) => setResposta(e.target.value)}
-                  placeholder="Resposta"
-                  required
-                  className="min-h-40 w-full rounded-xl border border-border bg-card px-4 py-3 outline-none focus:border-rose-500"
-                />
+                  <input
+                    value={categoria}
+                    onChange={(e) => setCategoria(e.target.value)}
+                    placeholder="Categoria"
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+                  />
+                </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">
+                    Pergunta
+                  </label>
+
+                  <textarea
+                    value={pergunta}
+                    onChange={(e) => setPergunta(e.target.value)}
+                    placeholder="Pergunta"
+                    required
+                    className="min-h-32 w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">
+                    Resposta
+                  </label>
+
+                  <textarea
+                    value={resposta}
+                    onChange={(e) => setResposta(e.target.value)}
+                    placeholder="Resposta"
+                    required
+                    className="min-h-40 w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-rose-800"
+                  />
+                </div>
+
+                <div className="flex flex-wrap gap-3 pt-2">
                   <button
                     type="submit"
                     disabled={salvando}
-                    className="rounded-xl bg-rose-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-rose-600 disabled:opacity-60"
+                    className="rounded-xl bg-gradient-to-r from-rose-900 to-red-900 px-5 py-3 text-sm font-medium text-white transition hover:from-rose-800 hover:to-red-800 disabled:opacity-60"
                   >
                     {salvando ? "Salvando..." : "Salvar alterações"}
                   </button>
 
                   <Link
                     href="/flashcards"
-                    className="rounded-xl border border-border px-5 py-3 text-sm font-medium text-muted-foreground transition hover:border-rose-500/40 hover:text-rose-400"
+                    className="rounded-xl border border-rose-800/30 bg-rose-950/20 px-5 py-3 text-sm font-medium text-rose-200 transition hover:bg-rose-900/30"
                   >
                     Cancelar
                   </Link>
@@ -182,7 +220,7 @@ export default function EditarFlashcardPage() {
                   <button
                     type="button"
                     onClick={excluirFlashcard}
-                    className="rounded-xl border border-red-500/30 px-5 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/10"
+                    className="rounded-xl border border-red-800/40 bg-red-950/20 px-5 py-3 text-sm font-medium text-red-300 transition hover:bg-red-900/30"
                   >
                     Excluir
                   </button>
