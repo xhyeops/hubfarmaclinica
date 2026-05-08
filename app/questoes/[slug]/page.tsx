@@ -12,6 +12,7 @@ import {
   RotateCcw,
   Pencil,
   AlertCircle,
+  Eye,
 } from "lucide-react"
 import Link from "next/link"
 import { useState, use, useEffect } from "react"
@@ -31,6 +32,7 @@ export default function QuestaoDetailPage({
 
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
+  const [openAnswer, setOpenAnswer] = useState("")
   const [showResult, setShowResult] = useState(false)
   const [score, setScore] = useState(0)
   const [finished, setFinished] = useState(false)
@@ -76,13 +78,10 @@ export default function QuestaoDetailPage({
     return (
       <div className="min-h-screen bg-background">
         <Sidebar />
-
         <main className="lg:pl-64 pt-14 lg:pt-0">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
             <div className="rounded-2xl border border-border bg-card p-8 text-center">
-              <p className="text-muted-foreground">
-                Carregando questões...
-              </p>
+              <p className="text-muted-foreground">Carregando questões...</p>
             </div>
           </div>
         </main>
@@ -94,7 +93,6 @@ export default function QuestaoDetailPage({
     return (
       <div className="min-h-screen bg-background">
         <Sidebar />
-
         <main className="lg:pl-64 pt-14 lg:pt-0">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
             <Link
@@ -127,57 +125,63 @@ export default function QuestaoDetailPage({
   const question = questoes[currentQuestion]
   const totalQuestions = questoes.length
 
+  const tipoQuestao = question.tipo || "fechada"
   const alternativas = [
     question.alternativa_a,
     question.alternativa_b,
     question.alternativa_c,
     question.alternativa_d,
-  ]
+    question.alternativa_e,
+  ].filter((alt) => alt && String(alt).trim())
 
-  const corretaIndex = ["A", "B", "C", "D"].indexOf(
-    String(question.correta).toUpperCase()
+  const corretaIndex = ["A", "B", "C", "D", "E"].indexOf(
+    String(question.correta || "A").toUpperCase()
   )
 
-  const handleSelect = (index: number) => {
+  function handleSelect(index: number) {
     if (showResult) return
     setSelectedAnswer(index)
   }
 
-  const handleConfirm = () => {
-    if (selectedAnswer === null) return
+  function handleConfirm() {
+    if (tipoQuestao === "fechada" && selectedAnswer === null) return
+    if (tipoQuestao === "aberta" && !openAnswer.trim()) return
 
     setShowResult(true)
 
-    if (selectedAnswer === corretaIndex) {
+    if (tipoQuestao === "fechada" && selectedAnswer === corretaIndex) {
       setScore((s) => s + 1)
     }
   }
 
-  const handleNext = () => {
+  function handleNext() {
     if (currentQuestion < totalQuestions - 1) {
       setCurrentQuestion((c) => c + 1)
       setSelectedAnswer(null)
+      setOpenAnswer("")
       setShowResult(false)
     } else {
       setFinished(true)
     }
   }
 
-  const handleRestart = () => {
+  function handleRestart() {
     setCurrentQuestion(0)
     setSelectedAnswer(null)
+    setOpenAnswer("")
     setShowResult(false)
     setScore(0)
     setFinished(false)
   }
 
   if (finished) {
-    const percentage = Math.round((score / totalQuestions) * 100)
+    const fechadas = questoes.filter((q) => (q.tipo || "fechada") === "fechada")
+    const percentage =
+      fechadas.length > 0 ? Math.round((score / fechadas.length) * 100) : 0
 
     return (
       <div className="min-h-screen bg-background">
         <Sidebar />
-
         <main className="lg:pl-64 pt-14 lg:pt-0">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
             <div className="rounded-3xl border border-border bg-card p-8 text-center">
@@ -192,9 +196,7 @@ export default function QuestaoDetailPage({
                 <span
                   className={cn(
                     "text-3xl font-bold",
-                    percentage >= 70
-                      ? "text-rose-200"
-                      : "text-amber-400"
+                    percentage >= 70 ? "text-rose-200" : "text-amber-400"
                   )}
                 >
                   {percentage}%
@@ -206,8 +208,7 @@ export default function QuestaoDetailPage({
               </h2>
 
               <p className="text-muted-foreground mb-6">
-                Você acertou {score} de {totalQuestions}{" "}
-                {totalQuestions === 1 ? "questão" : "questões"}.
+                Você acertou {score} de {fechadas.length} questões fechadas.
               </p>
 
               <div className="flex flex-wrap gap-3 justify-center">
@@ -267,7 +268,7 @@ export default function QuestaoDetailPage({
 
               <div>
                 <div className="mb-2 inline-flex rounded-full bg-rose-950/50 border border-rose-800/30 px-2.5 py-0.5 text-xs font-medium text-rose-200">
-                  Questões
+                  {tipoQuestao === "aberta" ? "Questão aberta" : "Questão fechada"}
                 </div>
 
                 <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
@@ -286,18 +287,14 @@ export default function QuestaoDetailPage({
                   Questão {currentQuestion + 1} de {totalQuestions}
                 </span>
 
-                <span className="font-medium text-rose-200">
-                  {score} acertos
-                </span>
+                <span className="font-medium text-rose-200">{score} acertos</span>
               </div>
 
               <div className="h-2 rounded-full bg-secondary overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-rose-900 to-red-900 transition-all duration-300"
                   style={{
-                    width: `${
-                      ((currentQuestion + 1) / totalQuestions) * 100
-                    }%`,
+                    width: `${((currentQuestion + 1) / totalQuestions) * 100}%`,
                   }}
                 />
               </div>
@@ -310,78 +307,116 @@ export default function QuestaoDetailPage({
                 {question.pergunta}
               </p>
 
-              <div className="space-y-3">
-                {alternativas.map((alt, index) => {
-                  const isSelected = selectedAnswer === index
-                  const isCorrect = index === corretaIndex
-                  const showCorrect = showResult && isCorrect
-                  const showWrong = showResult && isSelected && !isCorrect
+              {question.imagem_url && (
+                <img
+                  src={question.imagem_url}
+                  alt="Imagem da questão"
+                  className="mb-6 max-h-[420px] w-full rounded-2xl border border-border object-contain"
+                />
+              )}
 
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => handleSelect(index)}
-                      disabled={showResult}
-                      className={cn(
-                        "w-full flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition-all duration-200",
-                        !showResult &&
-                          isSelected &&
-                          "border-rose-800 bg-rose-950/20",
-                        !showResult &&
-                          !isSelected &&
-                          "border-border hover:border-rose-800/40 hover:bg-muted/50",
-                        showCorrect &&
-                          "border-emerald-500 bg-emerald-500/10",
-                        showWrong &&
-                          "border-rose-500 bg-rose-500/10",
-                        showResult &&
-                          !showCorrect &&
-                          !showWrong &&
-                          "opacity-50"
-                      )}
-                    >
-                      <span
+              {tipoQuestao === "fechada" ? (
+                <div className="space-y-3">
+                  {alternativas.map((alt, index) => {
+                    const isSelected = selectedAnswer === index
+                    const isCorrect = index === corretaIndex
+                    const showCorrect = showResult && isCorrect
+                    const showWrong = showResult && isSelected && !isCorrect
+
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handleSelect(index)}
+                        disabled={showResult}
                         className={cn(
-                          "w-8 h-8 rounded-xl flex items-center justify-center text-sm font-medium shrink-0",
+                          "w-full flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition-all duration-200",
                           !showResult &&
                             isSelected &&
-                            "bg-gradient-to-r from-rose-900 to-red-900 text-white",
+                            "border-rose-800 bg-rose-950/20",
                           !showResult &&
                             !isSelected &&
-                            "bg-secondary text-secondary-foreground",
-                          showCorrect &&
-                            "bg-emerald-500 text-white",
-                          showWrong &&
-                            "bg-rose-500 text-white"
+                            "border-border hover:border-rose-800/40 hover:bg-muted/50",
+                          showCorrect && "border-emerald-500 bg-emerald-500/10",
+                          showWrong && "border-rose-500 bg-rose-500/10",
+                          showResult && !showCorrect && !showWrong && "opacity-50"
                         )}
                       >
-                        {showCorrect ? (
-                          <CheckCircle2 className="h-5 w-5" />
-                        ) : showWrong ? (
-                          <XCircle className="h-5 w-5" />
-                        ) : (
-                          String.fromCharCode(65 + index)
-                        )}
-                      </span>
+                        <span
+                          className={cn(
+                            "w-8 h-8 rounded-xl flex items-center justify-center text-sm font-medium shrink-0",
+                            !showResult &&
+                              isSelected &&
+                              "bg-gradient-to-r from-rose-900 to-red-900 text-white",
+                            !showResult &&
+                              !isSelected &&
+                              "bg-secondary text-secondary-foreground",
+                            showCorrect && "bg-emerald-500 text-white",
+                            showWrong && "bg-rose-500 text-white"
+                          )}
+                        >
+                          {showCorrect ? (
+                            <CheckCircle2 className="h-5 w-5" />
+                          ) : showWrong ? (
+                            <XCircle className="h-5 w-5" />
+                          ) : (
+                            String.fromCharCode(65 + index)
+                          )}
+                        </span>
 
-                      <span className="flex-1 text-foreground">
-                        {alt}
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
+                        <span className="flex-1 text-foreground">{alt}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <textarea
+                    value={openAnswer}
+                    onChange={(e) => setOpenAnswer(e.target.value)}
+                    disabled={showResult}
+                    placeholder="Digite sua resposta aqui..."
+                    className="min-h-36 w-full resize-y rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-rose-700 disabled:opacity-70"
+                  />
+                </div>
+              )}
 
               {showResult && (
-                <div className="mt-6 rounded-2xl border border-rose-800/20 bg-rose-950/20 p-5">
-                  <p className="text-sm font-semibold text-foreground mb-2">
-                    Comentário
-                  </p>
+                <div className="mt-6 space-y-4">
+                  {tipoQuestao === "aberta" && (
+                    <>
+                      <div className="rounded-2xl border border-border bg-muted/40 p-4">
+                        <p className="mb-1 text-sm font-medium text-foreground">
+                          Sua resposta:
+                        </p>
 
-                  <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
-                    {question.comentario ||
-                      "Sem comentário cadastrado."}
-                  </p>
+                        <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+                          {openAnswer}
+                        </p>
+                      </div>
+
+                      <div className="rounded-2xl border border-rose-800/20 bg-rose-950/20 p-5">
+                        <p className="mb-1 flex items-center gap-2 text-sm font-semibold text-rose-200">
+                          <Eye className="h-4 w-4" />
+                          Resposta esperada:
+                        </p>
+
+                        <p className="whitespace-pre-line text-sm leading-relaxed text-foreground">
+                          {question.resposta_aberta ||
+                            "Sem resposta esperada cadastrada."}
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="rounded-2xl border border-rose-800/20 bg-rose-950/20 p-5">
+                    <p className="text-sm font-semibold text-foreground mb-2">
+                      Comentário
+                    </p>
+
+                    <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
+                      {question.comentario || "Sem comentário cadastrado."}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
@@ -390,7 +425,11 @@ export default function QuestaoDetailPage({
               {!showResult ? (
                 <Button
                   onClick={handleConfirm}
-                  disabled={selectedAnswer === null}
+                  disabled={
+                    tipoQuestao === "fechada"
+                      ? selectedAnswer === null
+                      : !openAnswer.trim()
+                  }
                   className="bg-gradient-to-r from-rose-900 to-red-900 hover:from-rose-800 hover:to-red-800"
                 >
                   Confirmar
