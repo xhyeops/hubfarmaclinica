@@ -141,7 +141,7 @@ export default function NovoResumoPage() {
       <div className="mx-auto max-w-7xl">
         <Link
           href="/"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-slate-400 hover:text-rose-300"
         >
           <ArrowLeft size={16} />
           Voltar
@@ -159,7 +159,7 @@ export default function NovoResumoPage() {
             form="form-novo-resumo"
             type="submit"
             disabled={loading}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:-translate-y-0.5 hover:bg-emerald-400 disabled:opacity-60"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-rose-900 to-red-900 px-5 py-3 text-sm font-medium text-white transition hover:from-rose-800 hover:to-red-800 disabled:opacity-60"
           >
             <Save size={18} />
             {loading ? "Salvando..." : "Salvar resumo"}
@@ -167,7 +167,7 @@ export default function NovoResumoPage() {
         </div>
 
         {erro && (
-          <p className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+          <p className="mb-4 rounded-xl border border-red-900/40 bg-red-950/40 px-4 py-3 text-sm text-red-300">
             {erro}
           </p>
         )}
@@ -187,7 +187,7 @@ export default function NovoResumoPage() {
               onChange={(e) => handleTituloChange(e.target.value)}
               required
               placeholder="Ex: Introdução à farmacocinética"
-              className="mb-5 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm outline-none focus:border-emerald-500"
+              className="mb-5 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm outline-none focus:border-rose-700"
             />
 
             <label className="mb-2 block text-sm font-medium text-slate-300">
@@ -199,7 +199,7 @@ export default function NovoResumoPage() {
               onChange={(e) => setSlug(gerarSlug(e.target.value))}
               required
               placeholder="introducao-a-farmacocinetica"
-              className="mb-5 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm outline-none focus:border-emerald-500"
+              className="mb-5 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm outline-none focus:border-rose-700"
             />
 
             <label className="mb-2 block text-sm font-medium text-slate-300">
@@ -258,7 +258,7 @@ export default function NovoResumoPage() {
               onChange={(e) => setConteudo(e.target.value)}
               required
               placeholder={`# Introdução\n\nDigite seu conteúdo aqui...\n\n## Tópico\n\n- Item 1\n- Item 2`}
-              className="min-h-[760px] w-full resize-y rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 font-mono text-sm leading-relaxed outline-none focus:border-emerald-500"
+              className="min-h-[760px] w-full resize-y rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 font-mono text-sm leading-relaxed outline-none focus:border-rose-700"
             />
           </section>
 
@@ -280,7 +280,7 @@ export default function NovoResumoPage() {
                     </h1>
                   ),
                   h2: ({ children }) => (
-                    <h2 className="mb-3 mt-6 text-2xl font-semibold text-white">
+                    <h2 className="mb-3 mt-6 border-l-4 border-rose-800 pl-3 text-2xl font-semibold text-white">
                       {children}
                     </h2>
                   ),
@@ -308,17 +308,17 @@ export default function NovoResumoPage() {
                     <li className="text-slate-200">{children}</li>
                   ),
                   strong: ({ children }) => (
-                    <strong className="font-bold text-emerald-400">
+                    <strong className="font-bold text-rose-300">
                       {children}
                     </strong>
                   ),
                   blockquote: ({ children }) => (
-                    <blockquote className="my-4 border-l-4 border-emerald-500/60 pl-4 italic text-slate-300">
+                    <blockquote className="my-4 border-l-4 border-rose-800 pl-4 italic text-slate-300">
                       {children}
                     </blockquote>
                   ),
                   code: ({ children }) => (
-                    <code className="rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-sm text-emerald-400">
+                    <code className="rounded-md bg-rose-950/40 px-1.5 py-0.5 text-sm text-rose-300">
                       {children}
                     </code>
                   ),
@@ -356,7 +356,7 @@ function ToolbarButton({
       type="button"
       title={title}
       onClick={onClick}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition hover:bg-emerald-500/10 hover:text-emerald-400"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition hover:bg-rose-950/40 hover:text-rose-300"
     >
       {children}
     </button>
