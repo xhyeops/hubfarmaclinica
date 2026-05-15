@@ -116,7 +116,7 @@ export default function FlashcardsPage() {
       <Sidebar />
 
       <main className="lg:pl-64 pt-14 lg:pt-0">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 lg:py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 lg:py-16">
           <section className="mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-rose-950/50 border border-rose-800/30 text-rose-200 text-sm font-medium">
               <Layers className="h-3.5 w-3.5" />
@@ -126,10 +126,22 @@ export default function FlashcardsPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h1 className="text-3xl sm:text-4xl font-bold mb-3">
-                  Flashcards de{" "}
-                  <span className="bg-gradient-to-r from-rose-200 via-rose-300 to-red-300 bg-clip-text text-transparent">
-                    Farmacologia Clínica
-                  </span>
+                  Flashcards{" "}
+                  {selectedDeck ? (
+                    <>
+                      de{" "}
+                      <span className="bg-gradient-to-r from-rose-200 via-rose-300 to-red-300 bg-clip-text text-transparent">
+                        {selectedDeck.titulo}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      de{" "}
+                      <span className="bg-gradient-to-r from-rose-200 via-rose-300 to-red-300 bg-clip-text text-transparent">
+                        Farmacologia Clínica
+                      </span>
+                    </>
+                  )}
                 </h1>
 
                 <p className="text-muted-foreground">
@@ -161,6 +173,16 @@ export default function FlashcardsPage() {
                   <p className="text-muted-foreground mb-4">
                     Nenhum flashcard cadastrado ainda.
                   </p>
+
+                  <AdminOnly>
+                    <Link
+                      href="/admin/novo-flashcard"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-900 to-red-900 px-4 py-2 text-sm font-medium text-white transition hover:from-rose-800 hover:to-red-800"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Criar primeiro flashcard
+                    </Link>
+                  </AdminOnly>
                 </div>
               ) : (
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -179,7 +201,7 @@ export default function FlashcardsPage() {
                       </h2>
 
                       <p className="mb-5 text-sm text-muted-foreground">
-                        Categoria: {deck.categoria || "Geral"}
+                        Revise os principais pontos de {deck.titulo}.
                       </p>
 
                       <div className="flex items-center justify-between text-sm text-muted-foreground">
@@ -195,10 +217,10 @@ export default function FlashcardsPage() {
             <section className="flex flex-col items-center">
               <div className="mb-5 flex w-full max-w-xl items-center justify-between rounded-2xl border border-rose-800/30 bg-rose-950/30 px-5 py-3">
                 <div>
-                  <p className="text-xs text-muted-foreground">Categoria</p>
+                  <p className="text-xs text-muted-foreground">Tema</p>
 
                   <p className="text-sm font-medium text-rose-200">
-                    {selectedDeck.categoria || "Geral"}
+                    {selectedDeck.titulo}
                   </p>
                 </div>
 
