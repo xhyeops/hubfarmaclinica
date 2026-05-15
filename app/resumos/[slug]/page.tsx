@@ -4,7 +4,12 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import ReactMarkdown from "react-markdown"
-import { ArrowLeft, BookOpen, FileText, Pencil } from "lucide-react"
+import {
+  ArrowLeft,
+  BookOpen,
+  FileText,
+  Pencil,
+} from "lucide-react"
 
 import { Sidebar } from "@/components/sidebar"
 import { AdminOnly } from "@/components/AdminOnly"
@@ -21,10 +26,14 @@ type Resumo = {
 
 export default function ResumoDetailPage() {
   const params = useParams()
-  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug
+  const slug = Array.isArray(params.slug)
+    ? params.slug[0]
+    : params.slug
 
   const [resumo, setResumo] = useState<Resumo | null>(null)
   const [loading, setLoading] = useState(true)
+  const [imagemAberta, setImagemAberta] =
+    useState<string | null>(null)
 
   useEffect(() => {
     async function carregarResumo() {
@@ -203,7 +212,9 @@ export default function ResumoDetailPage() {
                     </ol>
                   ),
 
-                  li: ({ children }) => <li>{children}</li>,
+                  li: ({ children }) => (
+                    <li>{children}</li>
+                  ),
 
                   blockquote: ({ children }) => (
                     <blockquote className="my-6 rounded-2xl border-l-4 border-rose-800 bg-rose-950/40 px-5 py-4 text-[15.5px] sm:text-[16.5px] leading-8 text-foreground/90">
@@ -211,19 +222,59 @@ export default function ResumoDetailPage() {
                     </blockquote>
                   ),
 
+                  table: ({ children }) => (
+                    <div className="my-6 overflow-x-auto rounded-2xl border border-border">
+                      <table className="w-full min-w-[640px] border-collapse text-sm">
+                        {children}
+                      </table>
+                    </div>
+                  ),
+
+                  thead: ({ children }) => (
+                    <thead className="bg-rose-950/40 text-rose-200">
+                      {children}
+                    </thead>
+                  ),
+
+                  tbody: ({ children }) => (
+                    <tbody className="divide-y divide-border">
+                      {children}
+                    </tbody>
+                  ),
+
+                  tr: ({ children }) => (
+                    <tr className="border-b border-border last:border-0">
+                      {children}
+                    </tr>
+                  ),
+
+                  th: ({ children }) => (
+                    <th className="px-4 py-3 text-left font-semibold text-foreground">
+                      {children}
+                    </th>
+                  ),
+
+                  td: ({ children }) => (
+                    <td className="px-4 py-3 text-foreground/90">
+                      {children}
+                    </td>
+                  ),
+
                   img: ({ src, alt }) => (
                     <figure className="my-8">
-                      <a
-                        href={src || ""}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setImagemAberta(src || "")
+                        }
+                        className="block mx-auto"
                       >
                         <img
                           src={src || ""}
                           alt={alt || ""}
                           className="mx-auto max-h-[540px] w-auto max-w-full rounded-2xl border border-border bg-white object-contain p-2 shadow-xl shadow-black/20 transition duration-300 hover:scale-[1.01]"
                         />
-                      </a>
+                      </button>
 
                       {alt && (
                         <figcaption className="mt-3 text-center text-xs sm:text-sm text-muted-foreground">
@@ -261,6 +312,28 @@ export default function ResumoDetailPage() {
           </article>
         </div>
       </main>
+
+      {imagemAberta && (
+        <div
+          className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          onClick={() => setImagemAberta(null)}
+        >
+          <button
+            type="button"
+            className="absolute right-4 top-4 rounded-full bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/20"
+            onClick={() => setImagemAberta(null)}
+          >
+            Fechar
+          </button>
+
+          <img
+            src={imagemAberta}
+            alt="Imagem ampliada"
+            className="max-h-[90vh] max-w-[95vw] rounded-2xl bg-white object-contain p-2 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   )
 }
