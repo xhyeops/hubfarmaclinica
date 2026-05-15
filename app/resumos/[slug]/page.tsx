@@ -221,7 +221,7 @@ export default function ResumoDetailPage() {
                         <img
                           src={src || ""}
                           alt={alt || ""}
-                          className="mx-auto max-h-[620px] w-auto max-w-full rounded-2xl border border-border bg-white object-contain p-2 shadow-xl shadow-black/20 transition duration-300 hover:scale-[1.01]"
+                          className="mx-auto max-h-[540px] w-auto max-w-full rounded-2xl border border-border bg-white object-contain p-2 shadow-xl shadow-black/20 transition duration-300 hover:scale-[1.01]"
                         />
                       </a>
 
