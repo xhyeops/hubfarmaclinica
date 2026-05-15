@@ -84,7 +84,9 @@ export default function ResumoDetailPage() {
             </Link>
 
             <div className="rounded-2xl border border-border bg-card p-8 text-center">
-              <p className="text-muted-foreground">Resumo não encontrado.</p>
+              <p className="text-muted-foreground">
+                Resumo não encontrado.
+              </p>
             </div>
           </div>
         </main>
@@ -97,7 +99,7 @@ export default function ResumoDetailPage() {
       <Sidebar />
 
       <main className="lg:pl-64 pt-14 lg:pt-0">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
           <Link
             href="/resumos"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-rose-300 mb-7 transition"
@@ -145,8 +147,8 @@ export default function ResumoDetailPage() {
             )}
           </div>
 
-          <article className="rounded-2xl border border-border bg-card p-5 sm:p-7">
-            <div className="mx-auto max-w-3xl">
+          <article className="rounded-2xl border border-border bg-card p-5 sm:p-8">
+            <div className="mx-auto max-w-4xl">
               <ReactMarkdown
                 components={{
                   h1: ({ children }) => (
@@ -156,13 +158,13 @@ export default function ResumoDetailPage() {
                   ),
 
                   h2: ({ children }) => (
-                    <h2 className="text-xl sm:text-2xl font-bold mt-8 mb-3 text-foreground leading-tight border-l-4 border-rose-800 pl-3">
+                    <h2 className="text-xl sm:text-2xl font-bold mt-8 mb-4 text-foreground leading-tight border-l-4 border-rose-800 pl-3">
                       {children}
                     </h2>
                   ),
 
                   h3: ({ children }) => (
-                    <h3 className="text-lg font-semibold mt-6 mb-2 text-foreground">
+                    <h3 className="text-lg font-semibold mt-6 mb-3 text-foreground">
                       {children}
                     </h3>
                   ),
@@ -173,11 +175,11 @@ export default function ResumoDetailPage() {
                     )
 
                     if (hasImage) {
-                      return <div className="my-5">{children}</div>
+                      return <div className="my-6">{children}</div>
                     }
 
                     return (
-                      <p className="mb-4 text-[15.5px] sm:text-base leading-7 text-foreground/90">
+                      <p className="mb-5 text-[15.5px] sm:text-[16.5px] leading-8 text-foreground/90">
                         {children}
                       </p>
                     )
@@ -190,13 +192,13 @@ export default function ResumoDetailPage() {
                   ),
 
                   ul: ({ children }) => (
-                    <ul className="list-disc pl-6 mb-5 space-y-2 text-[15.5px] leading-7 text-foreground/90">
+                    <ul className="list-disc pl-6 mb-5 space-y-2 text-[15.5px] sm:text-[16.5px] leading-8 text-foreground/90">
                       {children}
                     </ul>
                   ),
 
                   ol: ({ children }) => (
-                    <ol className="list-decimal pl-6 mb-5 space-y-2 text-[15.5px] leading-7 text-foreground/90">
+                    <ol className="list-decimal pl-6 mb-5 space-y-2 text-[15.5px] sm:text-[16.5px] leading-8 text-foreground/90">
                       {children}
                     </ol>
                   ),
@@ -204,17 +206,31 @@ export default function ResumoDetailPage() {
                   li: ({ children }) => <li>{children}</li>,
 
                   blockquote: ({ children }) => (
-                    <blockquote className="my-5 rounded-xl border-l-4 border-rose-800 bg-rose-950/40 px-4 py-3 text-[15.5px] leading-7 text-foreground/90">
+                    <blockquote className="my-6 rounded-2xl border-l-4 border-rose-800 bg-rose-950/40 px-5 py-4 text-[15.5px] sm:text-[16.5px] leading-8 text-foreground/90">
                       {children}
                     </blockquote>
                   ),
 
                   img: ({ src, alt }) => (
-                    <img
-                      src={src || ""}
-                      alt={alt || ""}
-                      className="mx-auto my-5 max-h-[280px] w-auto max-w-full rounded-xl border border-border bg-white object-contain shadow-md shadow-black/10"
-                    />
+                    <figure className="my-8">
+                      <a
+                        href={src || ""}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={src || ""}
+                          alt={alt || ""}
+                          className="mx-auto max-h-[620px] w-auto max-w-full rounded-2xl border border-border bg-white object-contain p-2 shadow-xl shadow-black/20 transition duration-300 hover:scale-[1.01]"
+                        />
+                      </a>
+
+                      {alt && (
+                        <figcaption className="mt-3 text-center text-xs sm:text-sm text-muted-foreground">
+                          {alt}
+                        </figcaption>
+                      )}
+                    </figure>
                   ),
 
                   a: ({ href, children }) => (
@@ -228,7 +244,9 @@ export default function ResumoDetailPage() {
                     </a>
                   ),
 
-                  hr: () => <hr className="my-7 border-border" />,
+                  hr: () => (
+                    <hr className="my-8 border-border" />
+                  ),
 
                   code: ({ children }) => (
                     <code className="rounded-md bg-secondary px-1.5 py-0.5 text-sm text-rose-300">
