@@ -173,16 +173,6 @@ export default function FlashcardsPage() {
                   <p className="text-muted-foreground mb-4">
                     Nenhum flashcard cadastrado ainda.
                   </p>
-
-                  <AdminOnly>
-                    <Link
-                      href="/admin/novo-flashcard"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-900 to-red-900 px-4 py-2 text-sm font-medium text-white transition hover:from-rose-800 hover:to-red-800"
-                    >
-                      <Plus className="h-4 w-4" />
-                      Criar primeiro flashcard
-                    </Link>
-                  </AdminOnly>
                 </div>
               ) : (
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -196,9 +186,7 @@ export default function FlashcardsPage() {
                         <Layers className="h-5 w-5" />
                       </div>
 
-                      <h2 className="mb-2 text-xl font-bold">
-                        {deck.titulo}
-                      </h2>
+                      <h2 className="mb-2 text-xl font-bold">{deck.titulo}</h2>
 
                       <p className="mb-5 text-sm text-muted-foreground">
                         Revise os principais pontos de {deck.titulo}.
@@ -256,34 +244,36 @@ export default function FlashcardsPage() {
                 <>
                   <button
                     onClick={virarCard}
-                    className="w-full max-w-xl cursor-pointer perspective"
+                    className="w-full max-w-xl cursor-pointer"
                   >
-                    <div
-                      className={`relative w-full h-[330px] sm:h-[380px] transition-transform duration-500 preserve-3d ${
-                        isFlipped ? "rotate-y-180" : ""
-                      }`}
-                    >
-                      <div className="absolute inset-0 backface-hidden rounded-[2rem] border border-rose-800/30 bg-gradient-to-br from-zinc-900 to-black p-8 shadow-2xl shadow-rose-950/20 flex items-center justify-center text-center">
-                        <div>
-                          <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-rose-200/70">
-                            Pergunta
-                          </p>
+                    <div className="relative h-[330px] w-full [perspective:1200px] sm:h-[380px]">
+                      <div
+                        className={`relative h-full w-full transition-transform duration-500 [transform-style:preserve-3d] ${
+                          isFlipped ? "[transform:rotateY(180deg)]" : ""
+                        }`}
+                      >
+                        <div className="absolute inset-0 flex items-center justify-center rounded-[2rem] border border-rose-800/30 bg-gradient-to-br from-zinc-900 to-black p-8 text-center shadow-2xl shadow-rose-950/20 [backface-visibility:hidden]">
+                          <div>
+                            <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-rose-200/70">
+                              Pergunta
+                            </p>
 
-                          <h2 className="text-2xl sm:text-3xl font-semibold leading-relaxed text-foreground">
-                            {currentCard.pergunta}
-                          </h2>
+                            <h2 className="text-2xl sm:text-3xl font-semibold leading-relaxed text-foreground">
+                              {currentCard.pergunta}
+                            </h2>
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-[2rem] border border-rose-800/30 bg-gradient-to-br from-rose-950 to-red-950 p-8 shadow-2xl shadow-rose-950/30 flex items-center justify-center text-center">
-                        <div>
-                          <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-rose-200">
-                            Resposta
-                          </p>
+                        <div className="absolute inset-0 flex items-center justify-center rounded-[2rem] border border-rose-800/30 bg-gradient-to-br from-rose-950 to-red-950 p-8 text-center shadow-2xl shadow-rose-950/30 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                          <div>
+                            <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-rose-200">
+                              Resposta
+                            </p>
 
-                          <h2 className="text-xl sm:text-2xl font-medium leading-relaxed text-foreground">
-                            {currentCard.resposta}
-                          </h2>
+                            <h2 className="text-xl sm:text-2xl font-medium leading-relaxed text-foreground">
+                              {currentCard.resposta}
+                            </h2>
+                          </div>
                         </div>
                       </div>
                     </div>
