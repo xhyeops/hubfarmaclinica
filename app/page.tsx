@@ -106,7 +106,7 @@ export default function HomePage() {
           titulo: item.titulo,
           categoria: item.categoria,
           criado_em: item.criado_em,
-          href: item.slug ? `/flashcards/${item.slug}` : "/flashcards",
+          href: "/flashcards",
           icon: Layers,
         })),
 
@@ -280,67 +280,6 @@ export default function HomePage() {
                 })}
               </div>
             )}
-          </section>
-
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-7 sm:mb-10">
-            {[
-              { label: "Resumos", value: counts.resumos, href: "/resumos", icon: FileText },
-              { label: "Flashcards", value: counts.flashcards, href: "/flashcards", icon: Layers },
-              { label: "Questões", value: counts.questoes, href: "/questoes", icon: HelpCircle },
-              { label: "Casos", value: counts.casos, href: "/casos-clinicos", icon: FlaskConical },
-              { label: "Fármacos", value: counts.farmacos, href: "/farmacos", icon: Pill },
-            ].map((item) => {
-              const Icon = item.icon
-
-              return (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="group rounded-2xl bg-card border border-border p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:border-rose-900/30 hover:shadow-lg hover:shadow-rose-900/10 dark:hover:border-rose-800/40 dark:hover:shadow-rose-950/20"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-2xl sm:text-3xl font-bold text-rose-900 dark:text-rose-200">
-                        {item.value}
-                      </div>
-
-                      <div className="text-sm text-muted-foreground">
-                        {item.label}
-                      </div>
-                    </div>
-
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100 border border-rose-900/20 text-rose-900 transition group-hover:scale-110 group-hover:bg-rose-200 dark:bg-rose-950/50 dark:border-rose-800/30 dark:text-rose-200 dark:group-hover:bg-rose-900/40">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                  </div>
-                </Link>
-              )
-            })}
-          </section>
-
-          <section className="rounded-2xl bg-card border border-border p-4 sm:p-5 transition hover:border-rose-900/30 dark:hover:border-rose-800/30">
-            <div className="flex items-center gap-2 mb-3 text-rose-900 dark:text-rose-200">
-              <Users className="h-4 w-4" />
-              <span className="text-sm font-medium">Equipe da monitoria</span>
-            </div>
-
-            <p className="text-sm text-muted-foreground">
-              Monitores:{" "}
-              <span className="text-rose-900 dark:text-rose-200 font-semibold">
-                André Araújo
-              </span>{" "}
-              e{" "}
-              <span className="text-rose-900 dark:text-rose-200 font-semibold">
-                Camille Alves
-              </span>
-            </p>
-
-            <p className="text-sm text-muted-foreground mt-1">
-              Professor:{" "}
-              <span className="text-foreground font-medium">
-                Paulo Yuri Firmino
-              </span>
-            </p>
           </section>
         </div>
       </main>
